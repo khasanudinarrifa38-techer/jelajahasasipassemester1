@@ -1,0 +1,2998 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Petualangan Harta Karun IPAS Kelas 5</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Tone.js untuk efek suara gamifikasi tanpa file audio eksternal -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+    <!-- Google Fonts: Fredoka (ceria untuk judul/tombol) & Nunito (nyaman dibaca anak) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800&family=Fredoka:wght@500;600;700&family=Nunito:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        /* =========================================================
+           CUSTOM STYLES & ANIMATIONS UNTUK TEMA PETUALANGAN HARTA KARUN
+           ========================================================= */
+        :root {
+            --ocean-deep: #0b4f6c;
+            --ocean-mid: #14749c;
+            --ocean-light: #20a4c8;
+            --parchment-bg: #fdf4dc;
+            --parchment-dark: #f2dfb1;
+            --gold-bright: #fbbf24;
+            --gold-deep: #b45309;
+            --wood-dark: #5c3a21;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: radial-gradient(circle at top, #1886ad 0%, #0b4f6c 60%, #073247 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            color: #2c1e12;
+        }
+
+        h1, h2, h3, .font-game {
+            font-family: 'Fredoka', sans-serif;
+        }
+
+        .font-cert {
+            font-family: 'Cinzel', serif;
+        }
+
+        /* Kartu Perkamen (Kertas Peta Kuno) */
+        .parchment-card {
+            background: linear-gradient(145deg, #fffaf0 0%, #faecc8 100%);
+            border: 3px solid #c99a4b;
+            box-shadow: 0 12px 28px rgba(7, 35, 52, 0.35), inset 0 0 24px rgba(196, 148, 63, 0.22);
+        }
+
+        /* Tombol 3D Gaya Game */
+        .btn-game {
+            font-family: 'Fredoka', sans-serif;
+            transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.15s ease;
+            position: relative;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .btn-game:active:not(:disabled) {
+            transform: translateY(3px);
+        }
+
+        .btn-gold {
+            background: linear-gradient(180deg, #fcd34d 0%, #f59e0b 100%);
+            color: #451a03;
+            border: 2px solid #b45309;
+            box-shadow: 0 5px 0 #92400e, 0 8px 16px rgba(0, 0, 0, 0.22);
+        }
+        .btn-gold:hover:not(:disabled) {
+            filter: brightness(1.06);
+        }
+        .btn-gold:active:not(:disabled) {
+            box-shadow: 0 2px 0 #92400e, 0 3px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-emerald {
+            background: linear-gradient(180deg, #34d399 0%, #059669 100%);
+            color: #ffffff;
+            border: 2px solid #047857;
+            box-shadow: 0 5px 0 #065f46, 0 8px 16px rgba(0, 0, 0, 0.22);
+        }
+        .btn-emerald:hover:not(:disabled) {
+            filter: brightness(1.06);
+        }
+        .btn-emerald:active:not(:disabled) {
+            box-shadow: 0 2px 0 #065f46;
+        }
+
+        .btn-ocean {
+            background: linear-gradient(180deg, #38bdf8 0%, #0284c7 100%);
+            color: #ffffff;
+            border: 2px solid #0369a1;
+            box-shadow: 0 5px 0 #075985, 0 8px 16px rgba(0, 0, 0, 0.22);
+        }
+        .btn-ocean:hover:not(:disabled) {
+            filter: brightness(1.06);
+        }
+        .btn-ocean:active:not(:disabled) {
+            box-shadow: 0 2px 0 #075985;
+        }
+
+        .btn-wood {
+            background: linear-gradient(180deg, #a16207 0%, #713f12 100%);
+            color: #fef3c7;
+            border: 2px solid #451a03;
+            box-shadow: 0 4px 0 #451a03;
+        }
+        .btn-wood:active:not(:disabled) {
+            box-shadow: 0 1px 0 #451a03;
+        }
+
+        /* Opsi Pilihan Ganda & MCMA */
+        .option-btn {
+            transition: all 0.16s ease;
+            border: 2.5px solid #d6b67c;
+            background: #fffdf7;
+            box-shadow: 0 4px 0 #d6b67c;
+        }
+        .option-btn:hover:not(:disabled) {
+            background: #fef3c7;
+            border-color: #d97706;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 0 #d97706;
+        }
+        .option-btn:active:not(:disabled) {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #d97706;
+        }
+        .option-selected {
+            background: #fef3c7 !important;
+            border-color: #d97706 !important;
+            box-shadow: 0 4px 0 #b45309 !important;
+        }
+        .option-correct {
+            background: #dcfce7 !important;
+            border-color: #16a34a !important;
+            box-shadow: 0 4px 0 #15803d !important;
+            color: #14532d !important;
+        }
+        .option-wrong {
+            background: #fee2e2 !important;
+            border-color: #dc2626 !important;
+            box-shadow: 0 4px 0 #b91c1c !important;
+            color: #7f1d1d !important;
+        }
+
+        /* Animasi Mengapung & Berdenyut */
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+        .animate-float {
+            animation: floatSlow 3.4s ease-in-out infinite;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { filter: drop-shadow(0 0 6px rgba(251, 191, 36, 0.7)); transform: scale(1); }
+            50% { filter: drop-shadow(0 0 18px rgba(251, 191, 36, 1)); transform: scale(1.06); }
+        }
+        .animate-pulse-gold {
+            animation: pulseGlow 2s ease-in-out infinite;
+        }
+
+        @keyframes waveMove {
+            0% { transform: translateX(0); }
+            50% { transform: translateX(-18px); }
+            100% { transform: translateX(0); }
+        }
+        .wave-anim {
+            animation: waveMove 6s ease-in-out infinite;
+        }
+
+        @keyframes popIn {
+            0% { opacity: 0; transform: scale(0.85) translateY(12px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .animate-pop {
+            animation: popIn 0.35s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-6px); }
+            40% { transform: translateX(6px); }
+            60% { transform: translateX(-4px); }
+            80% { transform: translateX(4px); }
+        }
+        .animate-shake {
+            animation: shake 0.4s ease;
+        }
+
+        /* Bingkai Sertifikat Ornamen */
+        .cert-frame {
+            background: linear-gradient(135deg, #fffdf5 0%, #fef6de 50%, #fffdf5 100%);
+            border: 10px double #b45309;
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4), inset 0 0 0 6px #fef3c7, inset 0 0 0 9px #d97706;
+            position: relative;
+        }
+
+        /* Kanvas Confetti */
+        #confettiCanvas {
+            position: fixed;
+            inset: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        /* Aturan Cetak Khusus Sertifikat */
+        @media print {
+            body {
+                background: #ffffff !important;
+                margin: 0;
+                padding: 0;
+            }
+            .no-print {
+                display: none !important;
+            }
+            #certificatePrintArea {
+                display: block !important;
+                box-shadow: none !important;
+                margin: 0 auto !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-amber-300 selection:text-amber-950">
+
+    <!-- Kanvas Efek Confetti -->
+    <canvas id="confettiCanvas"></canvas>
+
+    <!-- =========================================================
+         BAR NAVIGASI / HUD ATAS (Muncul saat sudah mulai bermain)
+         ========================================================= -->
+    <header id="topHud" class="hidden no-print sticky top-0 z-40 bg-sky-950/90 backdrop-blur-md border-b-2 border-amber-500/60 shadow-lg">
+        <div class="max-w-6xl mx-auto px-3 sm:px-6 py-2.5 flex flex-wrap items-center justify-between gap-2">
+            <!-- Info Pemain -->
+            <div class="flex items-center gap-2.5 min-w-0">
+                <div id="hudAvatar" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-amber-100 border-2 border-amber-400 flex items-center justify-center shrink-0 shadow"></div>
+                <div class="leading-tight min-w-0">
+                    <div id="hudName" class="font-game text-amber-300 text-sm sm:text-base font-bold truncate max-w-[140px] sm:max-w-[220px]">Petualang</div>
+                    <div id="hudSchool" class="text-sky-200 text-xs truncate max-w-[140px] sm:max-w-[220px]">SD Nusantara</div>
+                </div>
+            </div>
+
+            <!-- Statistik Koin, Kunci, Suara & Reset -->
+            <div class="flex items-center gap-2 sm:gap-3">
+                <!-- Koin Emas -->
+                <div class="flex items-center gap-1.5 bg-amber-950/70 border border-amber-400/70 rounded-full px-3 py-1 shadow-inner" title="Koin Emas">
+                    <span class="text-base sm:text-lg">🪙</span>
+                    <span id="hudCoins" class="font-game text-amber-300 font-bold text-sm sm:text-base">0</span>
+                </div>
+                <!-- Kunci Harta Karun -->
+                <div class="flex items-center gap-1.5 bg-emerald-950/70 border border-emerald-400/70 rounded-full px-3 py-1 shadow-inner" title="Kunci Pulau Terkumpul">
+                    <span class="text-base sm:text-lg">🗝️</span>
+                    <span id="hudKeys" class="font-game text-emerald-300 font-bold text-sm sm:text-base">0/4</span>
+                </div>
+                <!-- Toggle Suara -->
+                <button id="btnSoundToggle" onclick="toggleSound()" class="p-2 rounded-full bg-sky-800 hover:bg-sky-700 border border-sky-400/60 text-white transition" title="Nyalakan/Matikan Efek Suara" aria-label="Toggle Suara">
+                    <span id="soundIcon">🔊</span>
+                </button>
+                <!-- Tombol Reset -->
+                <button onclick="openResetModal()" class="p-2 rounded-full bg-rose-900/80 hover:bg-rose-800 border border-rose-400/50 text-rose-100 text-xs sm:text-sm font-game px-3 transition" title="Mulai Petualangan Baru">
+                    ↺ <span class="hidden sm:inline">Ulang</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- =========================================================
+         CONTAINER UTAMA APLIKASI
+         ========================================================= -->
+    <main class="max-w-6xl mx-auto px-3 sm:px-6 py-5 sm:py-8">
+
+        <!-- =====================================================
+             LAYAR 1: GERBANG PELABUHAN (Pendaftaran Pemain)
+             ===================================================== -->
+        <section id="screenStart" class="max-w-2xl mx-auto animate-pop">
+            <div class="parchment-card rounded-3xl p-6 sm:p-9 relative overflow-hidden">
+                <!-- Dekorasi Sudut Kompas SVG -->
+                <div class="absolute -top-6 -right-6 opacity-15 pointer-events-none">
+                    <svg width="160" height="160" viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="45" fill="none" stroke="#92400e" stroke-width="2" stroke-dasharray="4 3"/>
+                        <polygon points="50,5 58,42 95,50 58,58 50,95 42,58 5,50 42,42" fill="#92400e"/>
+                    </svg>
+                </div>
+
+                <!-- Header Judul -->
+                <div class="text-center mb-6 relative z-10">
+                    <div class="inline-flex items-center gap-2 bg-amber-800 text-amber-100 text-xs sm:text-sm font-bold px-4 py-1.5 rounded-full mb-3 shadow">
+                        <span>🧭</span> ASAS GANJIL IPAS KELAS 5 • TA 2026/2027
+                    </div>
+                    <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold text-amber-950 leading-tight drop-shadow-sm">
+                        Petualangan Harta Karun
+                        <span class="block text-amber-700 text-2xl sm:text-3xl mt-1">Samudra IPAS Nusantara</span>
+                    </h1>
+                    <p class="text-amber-900/85 mt-3 text-sm sm:text-base max-w-lg mx-auto">
+                        Jelajahi <strong>4 Pulau Misterius</strong>, selesaikan <strong>45 Tantangan IPAS</strong> sesuai kisi-kisi ASAS Ganjil (PG, Benar/Salah, MCMA, Isian Singkat, & Essai), kumpulkan 4 Kunci Emas, dan raih <strong>Sertifikat Kelulusan</strong>!
+                    </p>
+                </div>
+
+                <!-- Banner Lanjutkan Jika Ada Simpanan -->
+                <div id="resumeBanner" class="hidden mb-5 bg-emerald-50 border-2 border-emerald-400 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+                    <div class="text-center sm:text-left">
+                        <p class="font-game text-emerald-900 font-bold">Petualangan Sebelumnya Ditemukan!</p>
+                        <p id="resumeInfo" class="text-xs sm:text-sm text-emerald-800"></p>
+                    </div>
+                    <button onclick="resumeGame()" class="btn-game btn-emerald px-5 py-2.5 rounded-xl font-bold text-sm shrink-0">
+                        ⛵ Lanjutkan Berlayar
+                    </button>
+                </div>
+
+                <!-- Form Biodata Penjelajah -->
+                <form id="startForm" onsubmit="handleStartGame(event)" class="space-y-5 relative z-10">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label for="inputName" class="block font-game text-amber-950 font-semibold mb-1.5 text-sm sm:text-base">
+                                👤 Nama Lengkap Petualang
+                            </label>
+                            <input id="inputName" type="text" maxlength="45" placeholder="Contoh: Raka Pratama"
+                                class="w-full px-4 py-3 rounded-xl border-2 border-amber-400 bg-white focus:outline-none focus:border-amber-600 focus:ring-4 focus:ring-amber-200 text-amber-950 font-bold text-base shadow-inner" />
+                        </div>
+                        <div>
+                            <label for="inputSchool" class="block font-game text-amber-950 font-semibold mb-1.5 text-sm sm:text-base">
+                                🏫 Asal Sekolah
+                            </label>
+                            <input id="inputSchool" type="text" maxlength="55" placeholder="Contoh: SD Negeri 1 Bandung"
+                                class="w-full px-4 py-3 rounded-xl border-2 border-amber-400 bg-white focus:outline-none focus:border-amber-600 focus:ring-4 focus:ring-amber-200 text-amber-950 font-bold text-base shadow-inner" />
+                        </div>
+                    </div>
+
+                    <!-- Pesan Validasi Inline -->
+                    <div id="startError" class="hidden bg-rose-100 border-2 border-rose-400 text-rose-800 px-4 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2">
+                        <span>⚠️</span> <span id="startErrorText"></span>
+                    </div>
+
+                    <!-- Pilih Avatar Penjelajah -->
+                    <div>
+                        <label class="block font-game text-amber-950 font-semibold mb-2 text-sm sm:text-base">
+                            🎭 Pilih Karakter Penjelajahmu
+                        </label>
+                        <div id="avatarSelector" class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                            <!-- Diisi otomatis oleh JavaScript -->
+                        </div>
+                    </div>
+
+                    <!-- Tombol Mulai -->
+                    <div class="pt-2">
+                        <button type="submit" class="btn-game btn-gold w-full py-4 rounded-2xl text-lg sm:text-xl font-bold flex items-center justify-center gap-2">
+                            <span>⚓</span> Mulai Petualangan Harta Karun!
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Preview 4 Materi Pulau -->
+                <div class="mt-6 pt-5 border-t-2 border-amber-300/70 grid grid-cols-2 sm:grid-cols-4 gap-2 text-center text-xs font-bold text-amber-900">
+                    <div class="bg-amber-100/80 rounded-xl p-2 border border-amber-300">🏝️ 1. Geografis & Maritim</div>
+                    <div class="bg-amber-100/80 rounded-xl p-2 border border-amber-300">🌋 2. Kebutuhan & Ekonomi</div>
+                    <div class="bg-amber-100/80 rounded-xl p-2 border border-amber-300">🌿 3. Ekosistem & Rantai</div>
+                    <div class="bg-amber-100/80 rounded-xl p-2 border border-amber-300">💧 4. Siklus Air & Essai</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- =====================================================
+             LAYAR 2: PETA HARTA KARUN INTERAKTIF
+             ===================================================== -->
+        <section id="screenMap" class="hidden animate-pop space-y-6">
+            <!-- Header Peta -->
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-3 bg-sky-900/60 border-2 border-sky-400/40 rounded-2xl p-4 text-white">
+                <div>
+                    <h2 class="text-xl sm:text-2xl font-bold text-amber-300 flex items-center gap-2">
+                        <span>🗺️</span> Peta Petualangan Harta Karun IPAS
+                    </h2>
+                    <p id="mapSubtitle" class="text-sky-100 text-xs sm:text-sm mt-0.5">
+                        Taklukkan 4 pulau (45 soal sesuai kisi-kisi) untuk mengumpulkan 4 Kunci Emas dan membuka Peti Harta Karun!
+                    </p>
+                </div>
+                <div class="flex items-center gap-2 shrink-0">
+                    <button id="btnFreeMode" onclick="toggleFreeMode()" class="text-xs font-bold px-3.5 py-2 rounded-xl bg-sky-800 hover:bg-sky-700 border border-sky-400/60 text-sky-100 transition">
+                        🔓 Mode Bebas: MATI
+                    </button>
+                </div>
+            </div>
+
+            <!-- Peta Visual SVG Interaktif -->
+            <div class="relative rounded-3xl overflow-hidden border-4 border-amber-500/80 shadow-2xl bg-gradient-to-b from-cyan-600 via-sky-700 to-blue-900">
+                <svg id="treasureMapSvg" viewBox="0 0 1000 440" class="w-full h-auto block select-none" role="img" aria-label="Peta 4 Pulau Harta Karun IPAS">
+                    <defs>
+                        <radialGradient id="oceanGrad" cx="50%" cy="45%" r="65%">
+                            <stop offset="0%" stop-color="#22a7cf"/>
+                            <stop offset="65%" stop-color="#0e678c"/>
+                            <stop offset="100%" stop-color="#073b54"/>
+                        </radialGradient>
+                        <filter id="islandShadow" x="-15%" y="-15%" width="130%" height="130%">
+                            <feDropShadow dx="0" dy="8" stdDeviation="6" flood-color="#042436" flood-opacity="0.45"/>
+                        </filter>
+                    </defs>
+
+                    <!-- Lautan -->
+                    <rect width="1000" height="440" fill="url(#oceanGrad)"/>
+
+                    <!-- Ombak Dekoratif -->
+                    <g class="wave-anim" stroke="#7dd3fc" stroke-opacity="0.28" stroke-width="3" fill="none" stroke-linecap="round">
+                        <path d="M40 70 Q65 55 90 70 T140 70"/>
+                        <path d="M280 55 Q305 40 330 55 T380 55"/>
+                        <path d="M620 65 Q645 50 670 65 T720 65"/>
+                        <path d="M840 90 Q865 75 890 90 T940 90"/>
+                        <path d="M90 380 Q115 365 140 380 T190 380"/>
+                        <path d="M440 390 Q465 375 490 390 T540 390"/>
+                        <path d="M770 385 Q795 370 820 385 T870 385"/>
+                    </g>
+
+                    <!-- Kompas Hiasan Sudut Kiri Atas -->
+                    <g transform="translate(65, 62)" opacity="0.55">
+                        <circle cx="0" cy="0" r="30" fill="none" stroke="#fde68a" stroke-width="2" stroke-dasharray="4 3"/>
+                        <polygon points="0,-24 6,-5 24,0 6,5 0,24 -6,5 -24,0 -6,-5" fill="#fde68a"/>
+                        <text x="0" y="-33" text-anchor="middle" fill="#fef3c7" font-size="11" font-weight="bold">U</text>
+                    </g>
+
+                    <!-- Jalur Pelayaran Putus-Putus -->
+                    <path d="M135 280 C 210 190, 260 140, 340 165 C 430 190, 465 295, 555 275 C 645 255, 680 145, 760 155 C 835 165, 865 235, 900 285"
+                          fill="none" stroke="#fef08a" stroke-width="6" stroke-dasharray="14 11" stroke-linecap="round" opacity="0.85"/>
+
+                    <!-- PULAU 1: Pulau Nusantara & Maritim -->
+                    <g id="svgIsland0" onclick="enterIsland(0)" class="cursor-pointer transition-transform hover:scale-105" style="transform-origin: 135px 280px;" filter="url(#islandShadow)">
+                        <ellipse cx="135" cy="295" rx="84" ry="44" fill="#fde68a"/>
+                        <ellipse cx="135" cy="283" rx="70" ry="34" fill="#4ade80"/>
+                        <path d="M108 272 Q102 245 112 228" stroke="#78350f" stroke-width="7" fill="none" stroke-linecap="round"/>
+                        <path d="M112 228 Q90 220 82 234 M112 228 Q132 216 142 230 M112 228 Q112 208 128 210" stroke="#15803d" stroke-width="6" fill="none" stroke-linecap="round"/>
+                        <text x="148" y="280" text-anchor="middle" font-size="34">🏝️</text>
+                        <rect x="46" y="324" width="178" height="32" rx="14" fill="#78350f" stroke="#fbbf24" stroke-width="2.5"/>
+                        <text x="135" y="345" text-anchor="middle" fill="#fef3c7" font-family="Fredoka" font-size="13" font-weight="bold">1. Pulau Nusantara</text>
+                        <g id="svgStatus0"></g>
+                    </g>
+
+                    <!-- PULAU 2: Pelabuhan Ekonomi -->
+                    <g id="svgIsland1" onclick="enterIsland(1)" class="cursor-pointer transition-transform hover:scale-105" style="transform-origin: 340px 165px;" filter="url(#islandShadow)">
+                        <ellipse cx="340" cy="182" rx="84" ry="44" fill="#fde68a"/>
+                        <ellipse cx="340" cy="170" rx="70" ry="34" fill="#34d399"/>
+                        <polygon points="295,172 325,122 355,172" fill="#0f766e"/>
+                        <polygon points="315,139 325,122 335,139" fill="#e0f2fe"/>
+                        <text x="362" y="168" text-anchor="middle" font-size="32">⚖️</text>
+                        <rect x="250" y="210" width="180" height="32" rx="14" fill="#78350f" stroke="#fbbf24" stroke-width="2.5"/>
+                        <text x="340" y="231" text-anchor="middle" fill="#fef3c7" font-family="Fredoka" font-size="13" font-weight="bold">2. Pelabuhan Ekonomi</text>
+                        <g id="svgStatus1"></g>
+                    </g>
+
+                    <!-- PULAU 3: Rimba Ekosistem -->
+                    <g id="svgIsland2" onclick="enterIsland(2)" class="cursor-pointer transition-transform hover:scale-105" style="transform-origin: 555px 275px;" filter="url(#islandShadow)">
+                        <ellipse cx="555" cy="292" rx="84" ry="44" fill="#fde68a"/>
+                        <ellipse cx="555" cy="280" rx="70" ry="34" fill="#22c55e"/>
+                        <path d="M518 282 A 30 32 0 0 1 578 282 Z" fill="#14532d"/>
+                        <text x="550" y="274" text-anchor="middle" font-size="32">🌿</text>
+                        <rect x="464" y="321" width="182" height="32" rx="14" fill="#78350f" stroke="#fbbf24" stroke-width="2.5"/>
+                        <text x="555" y="342" text-anchor="middle" fill="#fef3c7" font-family="Fredoka" font-size="13" font-weight="bold">3. Rimba Ekosistem</text>
+                        <g id="svgStatus2"></g>
+                    </g>
+
+                    <!-- PULAU 4: Menara Siklus Air -->
+                    <g id="svgIsland3" onclick="enterIsland(3)" class="cursor-pointer transition-transform hover:scale-105" style="transform-origin: 755px 155px;" filter="url(#islandShadow)">
+                        <ellipse cx="755" cy="172" rx="84" ry="44" fill="#fde68a"/>
+                        <ellipse cx="755" cy="160" rx="70" ry="34" fill="#38bdf8"/>
+                        <text x="755" y="160" text-anchor="middle" font-size="40">💧</text>
+                        <rect x="664" y="200" width="182" height="32" rx="14" fill="#78350f" stroke="#fbbf24" stroke-width="2.5"/>
+                        <text x="755" y="221" text-anchor="middle" fill="#fef3c7" font-family="Fredoka" font-size="13" font-weight="bold">4. Menara Siklus Air</text>
+                        <g id="svgStatus3"></g>
+                    </g>
+
+                    <!-- PETI HARTA KARUN AGUNG -->
+                    <g id="svgTreasureChest" onclick="tryOpenTreasure()" class="cursor-pointer transition-transform hover:scale-105" style="transform-origin: 895px 305px;" filter="url(#islandShadow)">
+                        <ellipse cx="895" cy="322" rx="74" ry="38" fill="#fcd34d"/>
+                        <ellipse cx="895" cy="312" rx="60" ry="28" fill="#f59e0b"/>
+                        <text id="svgChestEmoji" x="895" y="315" text-anchor="middle" font-size="48">🎁</text>
+                        <rect x="815" y="348" width="160" height="34" rx="15" fill="#92400e" stroke="#fde047" stroke-width="3"/>
+                        <text id="svgChestLabel" x="895" y="370" text-anchor="middle" fill="#fef08a" font-family="Fredoka" font-size="13" font-weight="bold">🔒 Harta Karun</text>
+                    </g>
+
+                    <!-- Kapal Penjelajah Animasi -->
+                    <g id="svgShip" class="animate-float" style="transition: transform 0.7s ease;">
+                        <text x="0" y="0" text-anchor="middle" font-size="38">⛵</text>
+                    </g>
+                </svg>
+            </div>
+
+            <!-- Kartu Ringkasan 4 Pulau -->
+            <div id="islandCardsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <!-- Diisi otomatis oleh JavaScript -->
+            </div>
+
+            <!-- Banner Akses Peti Harta Karun jika sudah 4 Kunci -->
+            <div id="treasureReadyBanner" class="hidden parchment-card rounded-3xl p-5 sm:p-6 flex flex-col sm:flex-row items-center justify-between gap-4 border-4 border-amber-400">
+                <div class="flex items-center gap-4 text-center sm:text-left">
+                    <div class="text-5xl animate-pulse-gold">🏆</div>
+                    <div>
+                        <h3 class="text-xl sm:text-2xl font-bold text-amber-950">Keempat Kunci Emas Sudah Terkumpul!</h3>
+                        <p class="text-amber-900 text-sm">Buka Peti Harta Karun Agung sekarang untuk melihat Gelar Penghargaan & Sertifikat ASAS IPAS-mu!</p>
+                    </div>
+                </div>
+                <button onclick="openTreasureScreen()" class="btn-game btn-gold px-6 py-3.5 rounded-2xl font-bold text-base sm:text-lg shrink-0 animate-pulse-gold">
+                    🗝️ Buka Peti & Ambil Sertifikat!
+                </button>
+            </div>
+        </section>
+
+        <!-- =====================================================
+             LAYAR 3: TANTANGAN PULAU (SOAL INTERAKTIF)
+             ===================================================== -->
+        <section id="screenQuiz" class="hidden max-w-3xl mx-auto animate-pop">
+            <!-- Header Progres Pulau -->
+            <div class="flex items-center justify-between gap-3 mb-4">
+                <button onclick="backToMap()" class="btn-game btn-wood px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-1.5">
+                    <span>⬅️</span> Peta
+                </button>
+                <div class="flex-1 text-center">
+                    <div id="quizIslandTitle" class="font-game text-amber-300 font-bold text-base sm:text-lg drop-shadow">Pulau 1</div>
+                    <!-- Bar Progres -->
+                    <div class="w-full max-w-xs mx-auto bg-sky-950/80 h-3 rounded-full overflow-hidden border border-sky-400/50 mt-1">
+                        <div id="quizProgressBar" class="h-full bg-gradient-to-r from-amber-400 to-emerald-400 transition-all duration-300" style="width: 10%"></div>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span id="quizStreakBadge" class="hidden bg-orange-500 text-white font-game text-xs sm:text-sm font-bold px-3 py-1.5 rounded-full shadow animate-bounce">
+                        🔥 Kombo x2
+                    </span>
+                    <div class="bg-sky-950/80 border border-sky-400/60 text-amber-200 font-game text-xs sm:text-sm font-bold px-3 py-1.5 rounded-xl">
+                        <span id="quizCounter">1/12</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kartu Soal Perkamen -->
+            <div class="parchment-card rounded-3xl p-5 sm:p-8 space-y-5">
+                <!-- Tag Nomor Kisi-Kisi, Ranah Kognitif, & Bentuk Soal -->
+                <div class="flex flex-wrap items-center justify-between gap-2">
+                    <div class="flex flex-wrap items-center gap-1.5">
+                        <span id="quizKisiBadge" class="inline-flex items-center gap-1 bg-sky-900 text-amber-200 text-xs font-extrabold px-3 py-1 rounded-full shadow-sm">
+                            📋 Soal No. 1 • C2
+                        </span>
+                        <span id="quizIndicatorTag" class="inline-flex items-center gap-1.5 bg-amber-200/90 text-amber-950 border border-amber-400 text-xs font-extrabold px-3 py-1 rounded-full">
+                            🎯 Letak Geografis
+                        </span>
+                    </div>
+                    <span id="quizTypeTag" class="text-xs font-bold text-amber-800 bg-white/85 px-2.5 py-1 rounded-full border border-amber-300">
+                        Pilihan Ganda (PG)
+                    </span>
+                </div>
+
+                <!-- Kotak Ilustrasi SVG / Bacaan / Stimulus (Jika Ada) -->
+                <div id="quizContextBox" class="hidden bg-white/95 border-2 border-amber-400/80 rounded-2xl p-4 sm:p-5 shadow-inner relative space-y-3">
+                    <div id="quizContextTitle" class="font-game text-xs uppercase tracking-wider text-amber-700 font-bold flex items-center gap-1.5">
+                        📜 Stimulus Soal
+                    </div>
+                    <div id="quizVisualSlot" class="hidden flex justify-center"></div>
+                    <div id="quizContextBody" class="text-amber-950 text-sm sm:text-base leading-relaxed whitespace-pre-line font-semibold"></div>
+                </div>
+
+                <!-- Teks Pertanyaan -->
+                <h3 id="quizQuestionText" class="text-lg sm:text-xl md:text-2xl font-bold text-amber-950 leading-snug">
+                    Pertanyaan akan muncul di sini...
+                </h3>
+
+                <!-- Area Jawaban Dinamis (PG / Benar-Salah / MCMA / Isian Singkat / Essai) -->
+                <div id="quizAnswerArea" class="space-y-3"></div>
+
+                <!-- Kotak Umpan Balik (Benar/Salah + Pembahasan Kisi-Kisi) -->
+                <div id="quizFeedbackBox" class="hidden rounded-2xl p-4 sm:p-5 border-2 animate-pop">
+                    <div class="flex items-start gap-3">
+                        <div id="feedbackIcon" class="text-3xl shrink-0">🌟</div>
+                        <div class="flex-1 space-y-1">
+                            <h4 id="feedbackTitle" class="font-game text-lg font-bold">Hebat Sekali!</h4>
+                            <p id="feedbackExplain" class="text-sm sm:text-base leading-relaxed whitespace-pre-line"></p>
+                        </div>
+                    </div>
+                    <div class="mt-4 flex justify-end">
+                        <button id="btnNextQuestion" onclick="nextQuestion()" class="btn-game btn-emerald px-6 py-3 rounded-xl font-bold text-base flex items-center gap-2">
+                            Lanjut Tantangan <span>➡️</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- =====================================================
+             LAYAR 4: HARTA KARUN & SERTIFIKAT PENGHARGAAN
+             ===================================================== -->
+        <section id="screenTreasure" class="hidden max-w-4xl mx-auto animate-pop space-y-6">
+
+            <!-- Tahap A: Animasi Membuka Peti Harta Karun -->
+            <div id="chestUnlockStage" class="parchment-card rounded-3xl p-8 sm:p-12 text-center space-y-6">
+                <div class="inline-block bg-amber-800 text-amber-100 text-sm font-bold px-4 py-1.5 rounded-full">
+                    ✨ SEMUA 4 KUNCI EMAS TELAH TERKUMPUL ✨
+                </div>
+                <h2 class="text-3xl sm:text-4xl font-bold text-amber-950">Peti Harta Karun Agung Siap Dibuka!</h2>
+                <p class="text-amber-900 max-w-md mx-auto">Ketuk peti harta karun di bawah ini untuk menerima gelar kehormatan dan sertifikat ASAS Ganjil IPAS Kelas 5!</p>
+
+                <button onclick="revealCertificate()" class="group relative inline-flex flex-col items-center justify-center p-6 rounded-3xl bg-gradient-to-b from-amber-100 to-amber-200 border-4 border-amber-500 shadow-2xl hover:scale-105 transition cursor-pointer animate-pulse-gold">
+                    <!-- SVG Peti Harta Karun -->
+                    <svg width="170" height="145" viewBox="0 0 180 150" class="drop-shadow-lg">
+                        <rect x="20" y="65" width="140" height="72" rx="10" fill="#92400e" stroke="#451a03" stroke-width="5"/>
+                        <path d="M18 68 Q90 15 162 68 Z" fill="#b45309" stroke="#451a03" stroke-width="5"/>
+                        <rect x="20" y="62" width="140" height="14" fill="#fbbf24" stroke="#78350f" stroke-width="3"/>
+                        <rect x="78" y="56" width="24" height="32" rx="6" fill="#fde047" stroke="#78350f" stroke-width="3"/>
+                        <circle cx="90" cy="70" r="4" fill="#451a03"/>
+                        <rect x="88" y="72" width="4" height="8" fill="#451a03"/>
+                        <text x="35" y="34" font-size="22">✨</text>
+                        <text x="132" y="30" font-size="24">✨</text>
+                    </svg>
+                    <span class="mt-3 btn-game btn-gold px-6 py-2.5 rounded-xl font-bold text-lg">🗝️ Buka Peti Sekarang!</span>
+                </button>
+            </div>
+
+            <!-- Tahap B: Sertifikat & Rekap Nilai -->
+            <div id="certificateStage" class="hidden space-y-6">
+                <!-- Tombol Aksi (Tidak ikut tercetak) -->
+                <div class="no-print flex flex-wrap items-center justify-between gap-3 bg-sky-950/75 border-2 border-amber-400/50 rounded-2xl p-4">
+                    <button onclick="backToMap()" class="btn-game btn-wood px-4 py-2.5 rounded-xl text-sm font-bold">
+                        🗺️ Kembali ke Peta
+                    </button>
+                    <div class="flex flex-wrap items-center gap-2.5">
+                        <button onclick="openEditProfileModal()" class="btn-game btn-ocean px-4 py-2.5 rounded-xl text-sm font-bold">
+                            ✏️ Ubah Nama / Sekolah
+                        </button>
+                        <button onclick="downloadCertificatePNG()" class="btn-game btn-emerald px-5 py-2.5 rounded-xl text-sm font-bold">
+                            📥 Unduh Sertifikat (PNG)
+                        </button>
+                        <button onclick="window.print()" class="btn-game btn-gold px-5 py-2.5 rounded-xl text-sm font-bold">
+                            🖨️ Cetak Sertifikat
+                        </button>
+                    </div>
+                </div>
+
+                <!-- SERTIFIKAT PENGHARGAAN VISUAL -->
+                <div id="certificatePrintArea" class="cert-frame rounded-2xl p-6 sm:p-10 md:p-12 text-center overflow-hidden">
+                    <!-- Ornamen Sudut Emas -->
+                    <div class="absolute top-3 left-3 text-amber-600/60 text-2xl select-none">❖</div>
+                    <div class="absolute top-3 right-3 text-amber-600/60 text-2xl select-none">❖</div>
+                    <div class="absolute bottom-3 left-3 text-amber-600/60 text-2xl select-none">❖</div>
+                    <div class="absolute bottom-3 right-3 text-amber-600/60 text-2xl select-none">❖</div>
+
+                    <!-- Watermark Kompas di Tengah -->
+                    <div class="absolute inset-0 flex items-center justify-center opacity-[0.05] pointer-events-none">
+                        <svg width="360" height="360" viewBox="0 0 100 100">
+                            <circle cx="50" cy="50" r="46" fill="none" stroke="#92400e" stroke-width="2"/>
+                            <polygon points="50,4 58,42 96,50 58,58 50,96 42,58 4,50 42,42" fill="#92400e"/>
+                        </svg>
+                    </div>
+
+                    <div class="relative z-10 space-y-4">
+                        <!-- Lencana Atas -->
+                        <div class="flex justify-center items-center gap-3">
+                            <span class="text-3xl sm:text-4xl">🏆</span>
+                            <div class="text-left">
+                                <div class="text-xs sm:text-sm font-extrabold tracking-widest uppercase text-amber-700">Petualangan Harta Karun IPAS Kelas 5</div>
+                                <div id="certSerial" class="text-[11px] font-bold text-amber-800/75">No. Sertifikat: IPAS5-2026-0001</div>
+                            </div>
+                        </div>
+
+                        <h2 class="font-cert text-3xl sm:text-4xl md:text-5xl font-extrabold text-amber-900 tracking-wide pt-1">
+                            SERTIFIKAT PENGHARGAAN
+                        </h2>
+                        <div class="w-40 h-1 bg-gradient-to-r from-transparent via-amber-500 to-transparent mx-auto"></div>
+
+                        <p class="text-amber-900/90 text-sm sm:text-base font-semibold">Dengan bangga diberikan kepada:</p>
+
+                        <!-- Nama & Asal Sekolah -->
+                        <div class="py-1">
+                            <div id="certStudentName" class="font-game text-3xl sm:text-4xl md:text-5xl font-bold text-sky-950 break-words">
+                                Nama Siswa
+                            </div>
+                            <div id="certSchoolName" class="text-base sm:text-lg font-extrabold text-amber-800 mt-1">
+                                SD Negeri Nusantara
+                            </div>
+                        </div>
+
+                        <p class="text-amber-900/90 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed">
+                            Telah berhasil menuntaskan seluruh 45 misi <strong>ASAS Ganjil IPAS Kelas 5 (TA 2026/2027)</strong> (Kondisi Geografis & Maritim, Kebutuhan & Kegiatan Ekonomi, Ekosistem & Rantai Makanan, serta Siklus Air) dan dianugerahi gelar:
+                        </p>
+
+                        <!-- Pita Penghargaan Gelar -->
+                        <div class="py-2">
+                            <div class="inline-flex flex-col sm:flex-row items-center gap-2 bg-gradient-to-r from-amber-700 via-amber-500 to-amber-700 text-white px-6 sm:px-9 py-3 rounded-2xl shadow-lg border-2 border-amber-300">
+                                <span id="certTitleIcon" class="text-2xl sm:text-3xl">👑</span>
+                                <span id="certTitleText" class="font-game text-lg sm:text-2xl font-bold tracking-wide drop-shadow">
+                                    Laksamana Agung IPAS Nusantara
+                                </span>
+                            </div>
+                            <div id="certTitleDesc" class="text-xs sm:text-sm font-bold text-amber-800 mt-2">
+                                Penjelajah Master dengan ketelitian luar biasa!
+                            </div>
+                        </div>
+
+                        <!-- Statistik Nilai & Bintang -->
+                        <div class="grid grid-cols-3 gap-3 max-w-lg mx-auto pt-2">
+                            <div class="bg-amber-100/80 border border-amber-400 rounded-xl p-2.5">
+                                <div class="text-[11px] font-bold text-amber-800 uppercase">Nilai Akhir</div>
+                                <div id="certScoreVal" class="font-game text-xl sm:text-2xl font-bold text-amber-950">100</div>
+                            </div>
+                            <div class="bg-amber-100/80 border border-amber-400 rounded-xl p-2.5">
+                                <div class="text-[11px] font-bold text-amber-800 uppercase">Jawaban Benar</div>
+                                <div id="certCorrectVal" class="font-game text-xl sm:text-2xl font-bold text-emerald-800">45/45</div>
+                            </div>
+                            <div class="bg-amber-100/80 border border-amber-400 rounded-xl p-2.5">
+                                <div class="text-[11px] font-bold text-amber-800 uppercase">Koin Emas</div>
+                                <div id="certCoinsVal" class="font-game text-xl sm:text-2xl font-bold text-amber-700">4500</div>
+                            </div>
+                        </div>
+
+                        <!-- Footer Tanda Tangan & Stempel -->
+                        <div class="pt-6 mt-4 border-t border-amber-300/80 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-amber-950 px-2 sm:px-6">
+                            <div class="text-center sm:text-left">
+                                <div class="text-xs text-amber-800 font-bold">Tanggal Penyelesaian</div>
+                                <div id="certDate" class="font-bold">24 November 2026</div>
+                            </div>
+
+                            <!-- Stempel Emas SVG -->
+                            <div class="flex items-center justify-center">
+                                <svg width="78" height="78" viewBox="0 0 100 100">
+                                    <circle cx="50" cy="50" r="44" fill="#fef3c7" stroke="#d97706" stroke-width="4" stroke-dasharray="6 3"/>
+                                    <circle cx="50" cy="50" r="35" fill="#f59e0b"/>
+                                    <text x="50" y="47" text-anchor="middle" fill="#fffbeb" font-family="Fredoka" font-size="13" font-weight="bold">LULUS</text>
+                                    <text x="50" y="63" text-anchor="middle" fill="#fef08a" font-size="15">★★★</text>
+                                </svg>
+                            </div>
+
+                            <div class="text-center sm:text-right">
+                                <div class="text-xs text-amber-800 font-bold">Pemandu Ekspedisi</div>
+                                <div class="font-cert font-bold text-amber-900 mt-1 border-b border-amber-700 pb-0.5">Kapten IPAS Nusantara</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Rincian Nilai Per Pulau (Tidak ikut tercetak) -->
+                <div class="no-print parchment-card rounded-3xl p-5 sm:p-6">
+                    <h3 class="font-game text-lg sm:text-xl font-bold text-amber-950 mb-4 flex items-center gap-2">
+                        📊 Laporan Penguasaan 4 Lingkup Materi IPAS
+                    </h3>
+                    <div id="certBreakdownGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <!-- Diisi oleh JS -->
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- =========================================================
+         MODAL KUSTOM (Pengganti alert/confirm - Ramah UI)
+         ========================================================= -->
+    <!-- Modal Selesai Pulau -->
+    <div id="modalIslandDone" class="hidden fixed inset-0 z-50 bg-slate-950/75 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="parchment-card rounded-3xl max-w-md w-full p-6 sm:p-8 text-center space-y-4 animate-pop">
+            <div class="text-6xl animate-bounce">🗝️</div>
+            <h3 id="modalDoneTitle" class="text-2xl sm:text-3xl font-bold text-amber-950">Pulau Berhasil Ditaklukkan!</h3>
+            <div id="modalDoneStars" class="text-4xl tracking-widest">⭐⭐⭐</div>
+            <p id="modalDoneSummary" class="text-amber-900 font-semibold text-sm sm:text-base"></p>
+            <div class="bg-emerald-100 border-2 border-emerald-400 rounded-2xl p-3 text-emerald-900 font-bold text-sm">
+                🎉 Kamu memperoleh 1 Kunci Emas Harta Karun!
+            </div>
+            <div class="pt-2 flex flex-col gap-2.5">
+                <button id="modalDonePrimaryBtn" onclick="closeIslandDoneModal()" class="btn-game btn-gold w-full py-3.5 rounded-2xl font-bold text-base">
+                    🗺️ Kembali ke Peta Harta Karun
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Konfirmasi Reset -->
+    <div id="modalReset" class="hidden fixed inset-0 z-50 bg-slate-950/75 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="parchment-card rounded-3xl max-w-sm w-full p-6 text-center space-y-4 animate-pop">
+            <div class="text-5xl">⚓</div>
+            <h3 class="text-2xl font-bold text-amber-950">Mulai Petualangan Baru?</h3>
+            <p class="text-amber-900 text-sm">Semua koin, kunci, dan progres pulau saat ini akan diatur ulang dari awal.</p>
+            <div class="flex gap-3 pt-2">
+                <button onclick="closeResetModal()" class="btn-game btn-ocean flex-1 py-2.5 rounded-xl font-bold text-sm">Batal</button>
+                <button onclick="confirmResetGame()" class="btn-game bg-rose-600 text-white border-2 border-rose-800 shadow-[0_4px_0_#9f1239] flex-1 py-2.5 rounded-xl font-bold text-sm">Ya, Ulangi</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Ubah Nama & Asal Sekolah -->
+    <div id="modalEditProfile" class="hidden fixed inset-0 z-50 bg-slate-950/75 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="parchment-card rounded-3xl max-w-md w-full p-6 space-y-4 animate-pop">
+            <h3 class="text-xl font-bold text-amber-950 flex items-center gap-2">✏️ Perbarui Data Sertifikat</h3>
+            <div class="space-y-3">
+                <div>
+                    <label for="editNameInput" class="block text-sm font-bold text-amber-900 mb-1">Nama Lengkap</label>
+                    <input id="editNameInput" type="text" maxlength="45" class="w-full px-3.5 py-2.5 rounded-xl border-2 border-amber-400 bg-white font-bold text-amber-950 focus:outline-none focus:border-amber-600" />
+                </div>
+                <div>
+                    <label for="editSchoolInput" class="block text-sm font-bold text-amber-900 mb-1">Asal Sekolah</label>
+                    <input id="editSchoolInput" type="text" maxlength="55" class="w-full px-3.5 py-2.5 rounded-xl border-2 border-amber-400 bg-white font-bold text-amber-950 focus:outline-none focus:border-amber-600" />
+                </div>
+            </div>
+            <div class="flex gap-3 pt-2">
+                <button onclick="closeEditProfileModal()" class="btn-game btn-wood flex-1 py-2.5 rounded-xl font-bold text-sm">Batal</button>
+                <button onclick="saveEditedProfile()" class="btn-game btn-emerald flex-1 py-2.5 rounded-xl font-bold text-sm">Simpan</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notifikasi Ringan -->
+    <div id="toastBox" class="hidden fixed bottom-5 left-1/2 -translate-x-1/2 z-50 bg-sky-950 text-amber-200 border-2 border-amber-400 px-5 py-3 rounded-2xl shadow-2xl font-game text-sm sm:text-base flex items-center gap-2 animate-pop">
+        <span id="toastIcon">🧭</span>
+        <span id="toastMsg">Pesan notifikasi</span>
+    </div>
+
+    <!-- =========================================================
+         LOGIKA JAVASCRIPT GAMIFIKASI LENGKAP (45 SOAL SESUAI KISI-KISI)
+         ========================================================= -->
+    <script>
+        /* =========================================================
+           1. DATA AVATAR PENJELAJAH (SVG INLINE)
+           ========================================================= */
+        const AVATARS = [
+            {
+                id: 'captain',
+                label: 'Kapten Bahari',
+                svg: `<svg viewBox="0 0 64 64" class="w-full h-full"><circle cx="32" cy="36" r="18" fill="#fed7aa"/><path d="M12 28 Q32 8 52 28 Z" fill="#1e3a8a"/><rect x="10" y="25" width="44" height="6" rx="3" fill="#f59e0b"/><circle cx="32" cy="19" r="4" fill="#fde047"/><circle cx="25" cy="36" r="2.8" fill="#1e293b"/><circle cx="39" cy="36" r="2.8" fill="#1e293b"/><path d="M26 44 Q32 49 38 44" stroke="#9a3412" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg>`
+            },
+            {
+                id: 'explorer',
+                label: 'Penjelajah Alam',
+                svg: `<svg viewBox="0 0 64 64" class="w-full h-full"><circle cx="32" cy="37" r="18" fill="#fdba74"/><ellipse cx="32" cy="24" rx="24" ry="6" fill="#a16207"/><path d="M18 24 Q32 9 46 24 Z" fill="#ca8a04"/><rect x="19" y="20" width="26" height="4" fill="#15803d"/><circle cx="25" cy="36" r="2.8" fill="#1e293b"/><circle cx="39" cy="36" r="2.8" fill="#1e293b"/><path d="M25 44 Q32 50 39 44" stroke="#7c2d12" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg>`
+            },
+            {
+                id: 'navigator',
+                label: 'Navigator Muda',
+                svg: `<svg viewBox="0 0 64 64" class="w-full h-full"><circle cx="32" cy="36" r="18" fill="#ffedd5"/><path d="M14 34 Q16 14 32 14 Q48 14 50 34" fill="#7c3aed"/><circle cx="32" cy="20" r="5" fill="#fde047"/><circle cx="25" cy="36" r="2.8" fill="#1e293b"/><circle cx="39" cy="36" r="2.8" fill="#1e293b"/><path d="M26 44 Q32 49 38 44" stroke="#be123c" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg>`
+            },
+            {
+                id: 'scientist',
+                label: 'Peneliti Cilik',
+                svg: `<svg viewBox="0 0 64 64" class="w-full h-full"><circle cx="32" cy="37" r="18" fill="#fed7aa"/><path d="M14 26 Q32 12 50 26 L46 31 Q32 22 18 31 Z" fill="#0f766e"/><circle cx="25" cy="37" r="5.5" fill="none" stroke="#1e293b" stroke-width="2.2"/><circle cx="39" cy="37" r="5.5" fill="none" stroke="#1e293b" stroke-width="2.2"/><line x1="30.5" y1="37" x2="33.5" y2="37" stroke="#1e293b" stroke-width="2"/><circle cx="25" cy="37" r="2" fill="#1e293b"/><circle cx="39" cy="37" r="2" fill="#1e293b"/><path d="M26 46 Q32 50 38 46" stroke="#9a3412" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg>`
+            }
+        ];
+
+        /* =========================================================
+           2. ILUSTRASI SVG STIMULUS SOAL (NO. 6, 17, 20, 22, 44)
+           ========================================================= */
+        const VISUAL_STIMULI = {
+            // Soal No. 6: Gambar Kehidupan Negara Maritim
+            maritim: `
+                <svg viewBox="0 0 420 155" class="w-full max-w-md rounded-xl border border-sky-300 bg-gradient-to-b from-sky-200 to-cyan-100">
+                    <circle cx="360" cy="36" r="18" fill="#fde047"/>
+                    <path d="M0 105 Q55 92 110 105 T220 105 T330 105 T420 105 L420 155 L0 155 Z" fill="#0284c7"/>
+                    <path d="M0 122 Q70 112 140 122 T280 122 T420 122 L420 155 L0 155 Z" fill="#0369a1"/>
+                    <!-- Perahu Nelayan & Jaring -->
+                    <path d="M90 105 L195 105 L178 124 L105 124 Z" fill="#92400e" stroke="#451a03" stroke-width="2"/>
+                    <line x1="142" y1="55" x2="142" y2="105" stroke="#451a03" stroke-width="4"/>
+                    <polygon points="145,58 188,92 145,98" fill="#fef3c7" stroke="#d97706" stroke-width="2"/>
+                    <!-- Jaring ikan -->
+                    <path d="M192 106 Q235 112 248 136 Q210 142 182 122 Z" fill="none" stroke="#fef08a" stroke-width="2" stroke-dasharray="4 3"/>
+                    <text x="218" y="132" font-size="14">🐟🐠</text>
+                    <!-- Kapal Angkut Antar Pulau -->
+                    <rect x="275" y="88" width="90" height="18" rx="4" fill="#dc2626"/>
+                    <rect x="290" y="74" width="24" height="14" fill="#2563eb"/>
+                    <rect x="318" y="74" width="24" height="14" fill="#16a34a"/>
+                    <text x="12" y="24" font-family="Nunito" font-size="12" font-weight="bold" fill="#0c4a6e">Ilustrasi Aktivitas Bahari di Perairan Indonesia</text>
+                </svg>`,
+
+            // Soal No. 17: Gambar Rantai Makanan (Produsen)
+            rantai17: `
+                <svg viewBox="0 0 460 115" class="w-full max-w-lg rounded-xl border border-emerald-300 bg-emerald-50">
+                    <g transform="translate(48, 55)">
+                        <circle r="32" fill="#dcfce7" stroke="#16a34a" stroke-width="2.5"/>
+                        <text y="6" text-anchor="middle" font-size="26">🌾</text>
+                        <text y="46" text-anchor="middle" font-family="Nunito" font-size="12" font-weight="bold" fill="#14532d">Padi</text>
+                    </g>
+                    <text x="104" y="60" text-anchor="middle" font-size="20" fill="#15803d">➡️</text>
+                    <g transform="translate(160, 55)">
+                        <circle r="32" fill="#fef9c3" stroke="#ca8a04" stroke-width="2.5"/>
+                        <text y="6" text-anchor="middle" font-size="26">🐭</text>
+                        <text y="46" text-anchor="middle" font-family="Nunito" font-size="12" font-weight="bold" fill="#713f12">Tikus</text>
+                    </g>
+                    <text x="216" y="60" text-anchor="middle" font-size="20" fill="#15803d">➡️</text>
+                    <g transform="translate(272, 55)">
+                        <circle r="32" fill="#ffedd5" stroke="#ea580c" stroke-width="2.5"/>
+                        <text y="6" text-anchor="middle" font-size="26">🐍</text>
+                        <text y="46" text-anchor="middle" font-family="Nunito" font-size="12" font-weight="bold" fill="#7c2d12">Ular</text>
+                    </g>
+                    <text x="328" y="60" text-anchor="middle" font-size="20" fill="#15803d">➡️</text>
+                    <g transform="translate(384, 55)">
+                        <circle r="32" fill="#fee2e2" stroke="#dc2626" stroke-width="2.5"/>
+                        <text y="6" text-anchor="middle" font-size="26">🦅</text>
+                        <text y="46" text-anchor="middle" font-family="Nunito" font-size="12" font-weight="bold" fill="#7f1d1d">Elang</text>
+                    </g>
+                </svg>`,
+
+            // Soal No. 20: Gambar Piramida Makanan
+            piramida20: `
+                <svg viewBox="0 0 440 195" class="w-full max-w-md rounded-xl border border-amber-300 bg-amber-50/70">
+                    <!-- Tingkat IV (Puncak) -->
+                    <polygon points="220,16 172,56 268,56" fill="#ef4444" stroke="#991b1b" stroke-width="2"/>
+                    <text x="220" y="48" text-anchor="middle" font-family="Nunito" font-size="11" font-weight="bold" fill="#ffffff">IV. Elang</text>
+                    <!-- Tingkat III -->
+                    <polygon points="172,56 268,56 306,96 134,96" fill="#f97316" stroke="#9a3412" stroke-width="2"/>
+                    <text x="220" y="82" text-anchor="middle" font-family="Nunito" font-size="12" font-weight="bold" fill="#ffffff">III. Ular & Katak</text>
+                    <!-- Tingkat II -->
+                    <polygon points="134,96 306,96 344,136 96,136" fill="#eab308" stroke="#854d0e" stroke-width="2"/>
+                    <text x="220" y="122" text-anchor="middle" font-family="Nunito" font-size="12" font-weight="bold" fill="#422006">II. Belalang & Tikus</text>
+                    <!-- Tingkat I (Dasar) -->
+                    <polygon points="96,136 344,136 384,178 56,178" fill="#22c55e" stroke="#166534" stroke-width="2"/>
+                    <text x="220" y="162" text-anchor="middle" font-family="Nunito" font-size="12" font-weight="bold" fill="#ffffff">I. Tumbuhan Hijau (Produsen)</text>
+                </svg>`,
+
+            // Soal No. 22: Gambar Jaring-Jaring Makanan
+            jaring22: `
+                <svg viewBox="0 0 460 175" class="w-full max-w-lg rounded-xl border border-emerald-300 bg-emerald-50/80">
+                    <!-- Panah -->
+                    <g stroke="#15803d" stroke-width="2" fill="none">
+                        <line x1="78" y1="62" x2="175" y2="35"/>
+                        <line x1="78" y1="88" x2="175" y2="88"/>
+                        <line x1="78" y1="112" x2="175" y2="140"/>
+                        <line x1="225" y1="35" x2="325" y2="62"/>
+                        <line x1="225" y1="88" x2="325" y2="68"/>
+                        <line x1="225" y1="88" x2="325" y2="128"/>
+                        <line x1="225" y1="140" x2="325" y2="132"/>
+                        <line x1="365" y1="128" x2="365" y2="82"/>
+                    </g>
+                    <!-- Produsen -->
+                    <rect x="16" y="64" width="66" height="46" rx="10" fill="#bbf7d0" stroke="#16a34a" stroke-width="2"/>
+                    <text x="49" y="85" text-anchor="middle" font-size="16">🌱</text>
+                    <text x="49" y="102" text-anchor="middle" font-family="Nunito" font-size="11" font-weight="bold" fill="#14532d">Tumbuhan</text>
+                    <!-- Konsumen I -->
+                    <rect x="172" y="15" width="64" height="38" rx="10" fill="#fef08a" stroke="#ca8a04" stroke-width="2"/>
+                    <text x="204" y="39" text-anchor="middle" font-family="Nunito" font-size="11" font-weight="bold" fill="#713f12">🐇 Kelinci</text>
+
+                    <rect x="172" y="69" width="64" height="38" rx="10" fill="#fef08a" stroke="#ca8a04" stroke-width="2"/>
+                    <text x="204" y="93" text-anchor="middle" font-family="Nunito" font-size="11" font-weight="bold" fill="#713f12">🐭 Tikus</text>
+
+                    <rect x="172" y="122" width="64" height="38" rx="10" fill="#fef08a" stroke="#ca8a04" stroke-width="2"/>
+                    <text x="204" y="146" text-anchor="middle" font-family="Nunito" font-size="11" font-weight="bold" fill="#713f12">🦗 Belalang</text>
+
+                    <!-- Konsumen II / Puncak -->
+                    <rect x="326" y="42" width="76" height="40" rx="10" fill="#fecaca" stroke="#dc2626" stroke-width="2"/>
+                    <text x="364" y="67" text-anchor="middle" font-family="Nunito" font-size="11" font-weight="bold" fill="#7f1d1d">🦅 Elang</text>
+
+                    <rect x="326" y="114" width="76" height="40" rx="10" fill="#fed7aa" stroke="#ea580c" stroke-width="2"/>
+                    <text x="364" y="139" text-anchor="middle" font-family="Nunito" font-size="11" font-weight="bold" fill="#7c2d12">🐍 Ular</text>
+                </svg>`,
+
+            // Soal No. 44: Gambar Rantai Makanan (Rumput -> Belalang -> Katak -> Ular -> Elang)
+            rantai44: `
+                <svg viewBox="0 0 500 105" class="w-full max-w-xl rounded-xl border border-emerald-300 bg-emerald-50">
+                    <g transform="translate(44, 48)">
+                        <circle r="27" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+                        <text y="6" text-anchor="middle" font-size="22">🌿</text>
+                        <text y="42" text-anchor="middle" font-family="Nunito" font-size="11" font-weight="bold" fill="#14532d">Rumput</text>
+                    </g>
+                    <text x="93" y="53" text-anchor="middle" font-size="16">➡️</text>
+                    <g transform="translate(144, 48)">
+                        <circle r="27" fill="#fef9c3" stroke="#ca8a04" stroke-width="2"/>
+                        <text y="6" text-anchor="middle" font-size="22">🦗</text>
+                        <text y="42" text-anchor="middle" font-family="Nunito" font-size="11" font-weight="bold" fill="#713f12">Belalang</text>
+                    </g>
+                    <text x="193" y="53" text-anchor="middle" font-size="16">➡️</text>
+                    <g transform="translate(244, 48)">
+                        <circle r="27" fill="#d1fae5" stroke="#059669" stroke-width="2"/>
+                        <text y="6" text-anchor="middle" font-size="22">🐸</text>
+                        <text y="42" text-anchor="middle" font-family="Nunito" font-size="11" font-weight="bold" fill="#065f46">Katak</text>
+                    </g>
+                    <text x="293" y="53" text-anchor="middle" font-size="16">➡️</text>
+                    <g transform="translate(344, 48)">
+                        <circle r="27" fill="#ffedd5" stroke="#ea580c" stroke-width="2"/>
+                        <text y="6" text-anchor="middle" font-size="22">🐍</text>
+                        <text y="42" text-anchor="middle" font-family="Nunito" font-size="11" font-weight="bold" fill="#7c2d12">Ular</text>
+                    </g>
+                    <text x="393" y="53" text-anchor="middle" font-size="16">➡️</text>
+                    <g transform="translate(444, 48)">
+                        <circle r="27" fill="#fee2e2" stroke="#dc2626" stroke-width="2"/>
+                        <text y="6" text-anchor="middle" font-size="22">🦅</text>
+                        <text y="42" text-anchor="middle" font-family="Nunito" font-size="11" font-weight="bold" fill="#7f1d1d">Elang</text>
+                    </g>
+                </svg>`
+        };
+
+        /* =========================================================
+           3. BANK SOAL LENGKAP: 4 PULAU & 45 SOAL SESUAI KISI-KISI ASAS IPAS KELAS 5
+              Setiap soal memuat: noSoal, kognitif, bentuk, indicator, & pembahasan
+           ========================================================= */
+        const ISLANDS = [
+            {
+                id: 0,
+                name: 'Pulau Nusantara & Maritim',
+                topic: 'Kondisi Geografis, Maritim & Agraris (No. 1–7, 31–33, 41–42)',
+                icon: '🏝️',
+                shipPos: { x: 135, y: 235 },
+                questions: [
+                    // No. 1 | C2 | PG | Letak geografis Indonesia
+                    {
+                        noSoal: 1,
+                        kognitif: 'C2',
+                        type: 'mc',
+                        indicator: 'Menjelaskan letak geografis Indonesia',
+                        question: 'Berdasarkan letak geografisnya, wilayah negara Indonesia terletak di posisi silang yang sangat strategis, yaitu di antara...',
+                        options: [
+                            'Benua Asia dan Benua Afrika serta Samudra Hindia dan Samudra Atlantik',
+                            'Benua Asia dan Benua Australia serta Samudra Hindia dan Samudra Pasifik',
+                            'Benua Eropa dan Benua Australia serta Samudra Pasifik dan Samudra Arktik',
+                            'Benua Amerika dan Benua Asia serta Samudra Hindia dan Samudra Pasifik'
+                        ],
+                        answer: 1,
+                        explain: 'Secara geografis, Indonesia diapit oleh dua benua (Benua Asia dan Benua Australia) serta dua samudra (Samudra Hindia dan Samudra Pasifik).'
+                    },
+                    // No. 2 | C4 | PG | Alasan Indonesia disebut negara kepulauan
+                    {
+                        noSoal: 2,
+                        kognitif: 'C4',
+                        type: 'mc',
+                        indicator: 'Menganalisis alasan Indonesia disebut negara kepulauan',
+                        question: 'Indonesia dikenal dunia sebagai negara kepulauan (archipelagic state) terbesar. Analisis yang paling tepat mengenai alasan penyebutan tersebut adalah...',
+                        options: [
+                            'Seluruh wilayah Indonesia hanya terdiri atas satu pulau besar tanpa laut',
+                            'Wilayah Indonesia tersusun atas belasan ribu pulau besar dan kecil yang dihubungkan oleh lautan',
+                            'Semua pulau di Indonesia tidak memiliki penduduk sama sekali',
+                            'Wilayah daratan Indonesia jauh lebih luas daripada wilayah perairannya'
+                        ],
+                        answer: 1,
+                        explain: 'Indonesia disebut negara kepulauan karena wilayahnya terdiri atas lebih dari 17.000 pulau (seperti Sumatra, Jawa, Kalimantan, Sulawesi, Papua, dan pulau-pulau kecil) yang dipersatukan oleh laut.'
+                    },
+                    // No. 3 | C4 | PG | Contoh budaya maritim
+                    {
+                        noSoal: 3,
+                        kognitif: 'C4',
+                        type: 'mc',
+                        indicator: 'Menganalisis budaya maritim yang dilestarikan di daerah',
+                        question: 'Masyarakat pesisir di berbagai daerah di Indonesia melestarikan tradisi bahari seperti "Sedekah Laut / Petik Laut" dan pembuatan "Perahu Pinisi" oleh suku Bugis-Makassar. Makna yang dapat dianalisis dari pelestarian budaya maritim tersebut adalah...',
+                        options: [
+                            'Wujud rasa syukur atas hasil laut sekaligus bukti keahlian pelayaran nenek moyang bangsa Indonesia',
+                            'Upaya meninggalkan kegiatan melaut dan beralih sepenuhnya menjadi penambang batu bara',
+                            'Larangan bagi nelayan untuk menangkap ikan di perairan Nusantara',
+                            'Bukti bahwa masyarakat pesisir hanya bergantung pada pertanian dataran tinggi'
+                        ],
+                        answer: 0,
+                        explain: 'Budaya maritim seperti Petik Laut (rasa syukur nelayan atas tangkapan ikan) dan pembuatan Perahu Pinisi (warisan UNESCO) menunjukkan eratnya kehidupan masyarakat Indonesia dengan laut.'
+                    },
+                    // No. 4 | C4 | Benar Salah | Karakteristik Indonesia
+                    {
+                        noSoal: 4,
+                        kognitif: 'C4',
+                        type: 'tf',
+                        indicator: 'Menganalisis pernyataan karakteristik Indonesia',
+                        contextTitle: '🧭 Pernyataan Karakteristik Wilayah Indonesia',
+                        context: '“Karena dilalui garis khatulistiwa dan terletak di antara dua samudra, Indonesia memiliki iklim tropis dengan dua musim (hujan dan kemarau) serta keanekaragaman hayati yang sangat tinggi.”',
+                        question: 'Analisislah pernyataan mengenai karakteristik Indonesia di atas! Apakah pernyataan tersebut BENAR atau SALAH?',
+                        answer: true,
+                        explain: 'Pernyataan tersebut BENAR. Letak Indonesia di sekitar garis khatulistiwa (0° lintang) membuatnya beriklim tropis, mendapat penyinaran matahari sepanjang tahun, memiliki dua musim utama, dan kaya flora-fauna.'
+                    },
+                    // No. 5 | C4 | PG | Alasan Indonesia disebut negara maritim
+                    {
+                        noSoal: 5,
+                        kognitif: 'C4',
+                        type: 'mc',
+                        indicator: 'Menganalisis alasan Indonesia disebut negara maritim',
+                        question: 'Perhatikan data berikut: Sekitar dua pertiga (2/3) wilayah Indonesia berupa lautan yang kaya akan sumber daya ikan, terumbu karang, dan jalur pelayaran. Berdasarkan analisis kondisi tersebut, Indonesia disebut sebagai...',
+                        options: [
+                            'Negara kontinental',
+                            'Negara maritim',
+                            'Negara gurun',
+                            'Negara kutub'
+                        ],
+                        answer: 1,
+                        explain: 'Negara maritim adalah negara yang sebagian besar wilayahnya berupa perairan/lautan luas dan masyarakatnya memanfaatkan sumber daya laut untuk kehidupan dan perekonomian.'
+                    },
+                    // No. 6 | C4 | PG | Gambar & pernyataan kehidupan negara maritim
+                    {
+                        noSoal: 6,
+                        kognitif: 'C4',
+                        type: 'mc',
+                        indicator: 'Menganalisis gambar & kehidupan sebagai negara maritim',
+                        contextTitle: '🖼️ Amati Gambar Aktivitas Bahari Berikut',
+                        visualKey: 'maritim',
+                        context: 'Pernyataan: Wilayah perairan Indonesia yang luas mendukung aktivitas penangkapan ikan oleh nelayan serta transportasi kapal antarpulau.',
+                        question: 'Berdasarkan gambar dan pernyataan di atas, dampak positif kondisi maritim bagi kehidupan masyarakat Indonesia adalah...',
+                        options: [
+                            'Membuka lapangan kerja di bidang perikanan, pelayaran, dan wisata bahari',
+                            'Menyebabkan masyarakat antarpulau tidak pernah bisa saling bertukar barang',
+                            'Membuat Indonesia harus mengimpor seluruh kebutuhan ikan dari negara lain',
+                            'Menghambat jalur perdagangan kapal asing maupun kapal lokal'
+                        ],
+                        answer: 0,
+                        explain: 'Luasnya lautan Indonesia menyediakan sumber protein ikan yang melimpah, sarana transportasi laut antarpulau, serta peluang usaha di sektor perikanan dan pariwisata bahari.'
+                    },
+                    // No. 7 | C4 | PG | Jalur perdagangan internasional
+                    {
+                        noSoal: 7,
+                        kognitif: 'C4',
+                        type: 'mc',
+                        indicator: 'Menganalisis jalur perdagangan internasional Indonesia',
+                        contextTitle: '🚢 Posisi Silang Perdagangan Dunia',
+                        context: 'Kapal-kapal dagang dari Asia Timur (seperti Jepang dan Tiongkok) yang menuju Eropa, Timur Tengah, atau Australia sering melintasi Selat Malaka dan perairan Indonesia.',
+                        question: 'Keuntungan ekonomi yang diperoleh Indonesia dari posisi strategis pada jalur perdagangan internasional tersebut adalah...',
+                        options: [
+                            'Pelabuhan-pelabuhan di Indonesia ramai disinggahi kapal dagang sehingga meningkatkan pendapatan negara',
+                            'Perairan Indonesia menjadi sepi karena kapal dagang memilih memutar melewati kutub',
+                            'Indonesia tidak perlu melakukan kegiatan ekspor dan impor dengan negara sahabat',
+                            'Seluruh hasil bumi Indonesia tidak laku dijual di pasar internasional'
+                        ],
+                        answer: 0,
+                        explain: 'Berada di jalur pelayaran internasional menjadikan pelabuhan Indonesia sebagai titik transit dan perdagangan penting, sehingga mendorong pertumbuhan ekonomi serta ekspor-impor.'
+                    },
+                    // No. 31 | C1 | Isian Singkat | Letak astronomis Indonesia
+                    {
+                        noSoal: 31,
+                        kognitif: 'C1',
+                        type: 'short',
+                        indicator: 'Menyebutkan letak astronomis Indonesia',
+                        question: 'Secara astronomis, wilayah Indonesia terletak pada garis lintang dan garis bujur yaitu 6° LU – 11° LS dan ... BT – 141° BT. Angka derajat bujur timur yang tepat untuk melengkapi titik-titik tersebut adalah...',
+                        placeholder: 'Ketik angka derajatnya (contoh: 95 atau 95°)...',
+                        accepted: ['95', '95°', '95 derajat'],
+                        hint: 'Batas paling barat wilayah Indonesia di Pulau Weh (Sabang) berada pada garis 95° Bujur Timur.',
+                        explain: 'Letak astronomis Indonesia adalah 6° LU (Lintang Utara) – 11° LS (Lintang Selatan) dan 95° BT (Bujur Timur) – 141° BT (Bujur Timur).'
+                    },
+                    // No. 32 | C4 | Isian Singkat | Mata pencaharian negara agraris
+                    {
+                        noSoal: 32,
+                        kognitif: 'C4',
+                        type: 'short',
+                        indicator: 'Menganalisis mata pencaharian negara agraris',
+                        question: 'Indonesia memiliki tanah vulkanik yang subur dan curah hujan yang cukup sehingga disebut negara agraris. Sebagian besar penduduk di negara agraris bermata pencaharian sebagai...',
+                        placeholder: 'Ketik mata pencaharian utama...',
+                        accepted: ['petani', 'bercocok tanam', 'pertanian', 'pekebun'],
+                        hint: 'Profesi yang mengolah lahan sawah atau ladang untuk menanam padi, sayur, dan palawija.',
+                        explain: 'Sebagai negara agraris, sebagian besar penduduk Indonesia bekerja sebagai petani (sektor pertanian dan perkebunan).'
+                    },
+                    // No. 33 | C4 | Isian Singkat | Fungsi dan manfaat laut
+                    {
+                        noSoal: 33,
+                        kognitif: 'C4',
+                        type: 'short',
+                        indicator: 'Menganalisis fungsi dan manfaat laut',
+                        contextTitle: '🌊 Pernyataan Manfaat Laut Nusantara',
+                        context: '“Selain sebagai penghasil ikan, rumput laut, dan garam, perairan laut yang menghubungkan Pulau Jawa, Sumatra, Kalimantan, dan Sulawesi dimanfaatkan kapal feri serta kapal barang.”',
+                        question: 'Berdasarkan pernyataan di atas, laut berfungsi sebagai sarana ... antarpulau.',
+                        placeholder: 'Ketik 1 kata yang tepat...',
+                        accepted: ['transportasi', 'perhubungan', 'pelayaran', 'penghubung'],
+                        hint: 'Kata yang berarti sarana pengangkutan penumpang atau barang dari satu pulau ke pulau lain.',
+                        explain: 'Laut Indonesia memiliki fungsi vital sebagai sarana transportasi (perhubungan/pelayaran) yang menghubungkan antarpulau.'
+                    },
+                    // No. 41 | C2 | ESSAI | Alasan Indonesia disebut negara maritim
+                    {
+                        noSoal: 41,
+                        kognitif: 'C2',
+                        type: 'essay',
+                        indicator: 'Menjelaskan alasan Indonesia disebut negara maritim',
+                        question: 'Jelaskan mengapa negara Indonesia disebut sebagai negara maritim!',
+                        placeholder: 'Tuliskan penjelasan lengkapmu di sini...',
+                        keywords: ['laut', 'perairan', 'luas', 'pulau', '2/3', 'dua pertiga', 'ikan', 'pelayaran', 'bahari'],
+                        minMatches: 2,
+                        modelAnswer: 'Indonesia disebut sebagai negara maritim karena sebagian besar wilayahnya (sekitar 2/3 wilayah) berupa lautan/perairan yang luas, memiliki ribuan pulau, dan masyarakatnya banyak memanfaatkan sumber daya laut seperti perikanan, pelayaran, serta perdagangan laut.',
+                        explain: 'Kunci jawaban essai: Wilayah Indonesia sebagian besar (dua pertiga) berupa perairan/lautan yang luas dan kaya hasil laut serta jalur pelayaran.'
+                    },
+                    // No. 42 | C2 | ESSAI | Alasan Indonesia dijuluki Zamrud Khatulistiwa
+                    {
+                        noSoal: 42,
+                        kognitif: 'C2',
+                        type: 'essay',
+                        indicator: 'Menjelaskan alasan Indonesia dijuluki Zamrud Khatulistiwa',
+                        question: 'Jelaskan alasan Indonesia mendapat julukan sebagai "Zamrud Khatulistiwa"!',
+                        placeholder: 'Tuliskan penjelasan lengkapmu di sini...',
+                        keywords: ['khatulistiwa', 'hijau', 'hutan', 'subur', 'pulau', 'tropis', 'zamrud', 'alam'],
+                        minMatches: 2,
+                        modelAnswer: 'Indonesia dijuluki Zamrud Khatulistiwa karena wilayah kepulauannya dilalui oleh garis khatulistiwa (iklim tropis) dan memiliki hutan hujan tropis serta alam yang sangat subur dan hijau bagaikan batu permata zamrud yang indah jika dilihat dari atas.',
+                        explain: 'Kunci jawaban essai: Indonesia dilalui garis khatulistiwa serta memiliki pulau-pulau subur dengan hutan hijau yang lebat seperti batu permata zamrud.'
+                    }
+                ]
+            },
+            {
+                id: 1,
+                name: 'Pelabuhan Ekonomi',
+                topic: 'Kebutuhan Manusia & Kegiatan Ekonomi (No. 8–14, 34–35, 43)',
+                icon: '⚖️',
+                shipPos: { x: 340, y: 120 },
+                questions: [
+                    // No. 8 | C1 | PG | Pengertian kebutuhan dasar (primer)
+                    {
+                        noSoal: 8,
+                        kognitif: 'C1',
+                        type: 'mc',
+                        indicator: 'Mengidentifikasi pengertian kebutuhan dasar hidup',
+                        question: 'Kebutuhan pokok atau kebutuhan dasar yang mutlak harus dipenuhi agar manusia dapat bertahan hidup dengan layak disebut kebutuhan...',
+                        options: [
+                            'Kebutuhan tersier',
+                            'Kebutuhan sekunder',
+                            'Kebutuhan primer',
+                            'Kebutuhan masa depan'
+                        ],
+                        answer: 2,
+                        explain: 'Kebutuhan primer adalah kebutuhan dasar utama manusia yang wajib dipenuhi untuk kelangsungan hidup, meliputi pangan (makanan), sandang (pakaian), dan papan (tempat tinggal).'
+                    },
+                    // No. 9 | C2 | PG | Contoh kebutuhan sekunder
+                    {
+                        noSoal: 9,
+                        kognitif: 'C2',
+                        type: 'mc',
+                        indicator: 'Menentukan contoh kebutuhan sekunder',
+                        question: 'Setelah kebutuhan makan, pakaian, dan rumah terpenuhi, manusia memerlukan kebutuhan pelengkap agar hidup lebih nyaman. Manakah kelompok barang berikut yang termasuk contoh kebutuhan sekunder?',
+                        options: [
+                            'Nasi, air minum, dan rumah tempat tinggal',
+                            'Sepatu sekolah, tas, sepeda, dan televisi',
+                            'Perhiasan berlian, mobil sport mewah, dan kapal pesiar',
+                            'Udara untuk bernapas dan sinar matahari'
+                        ],
+                        answer: 1,
+                        explain: 'Kebutuhan sekunder adalah kebutuhan kedua setelah primer terpenuhi, contohnya sepatu, tas, meja belajar, sepeda, dan televisi.'
+                    },
+                    // No. 10 | C2 | PG | Mengelompokkan kebutuhan tersier
+                    {
+                        noSoal: 10,
+                        kognitif: 'C2',
+                        type: 'mc',
+                        indicator: 'Mengelompokkan barang kebutuhan tersier',
+                        question: 'Perhatikan daftar barang berikut: (1) Beras dan lauk pauk, (2) Perhiasan berlian, (3) Seragam sekolah, (4) Mobil mewah impor, (5) Liburan ke luar negeri. Kelompok barang yang termasuk kebutuhan tersier ditunjukkan oleh nomor...',
+                        options: [
+                            '(1), (2), dan (3)',
+                            '(1), (3), dan (4)',
+                            '(2), (4), dan (5)',
+                            '(3), (4), dan (5)'
+                        ],
+                        answer: 2,
+                        explain: 'Kebutuhan tersier adalah kebutuhan akan barang mewah atau hiburan mahal yang umumnya dipenuhi setelah kebutuhan primer dan sekunder tercukupi, yaitu nomor (2), (4), dan (5).'
+                    },
+                    // No. 11 | C2 | PG | Peran pelaku ekonomi berdasarkan ilustrasi
+                    {
+                        noSoal: 11,
+                        kognitif: 'C2',
+                        type: 'mc',
+                        indicator: 'Mengidentifikasi peran pelaku ekonomi berdasarkan ilustrasi',
+                        contextTitle: '🏭 Ilustrasi Kegiatan Ekonomi',
+                        context: 'Bu Rina memiliki usaha konveksi di Kebumen. Setiap hari ia membeli kain dan menjahitnya menjadi baju seragam sekolah untuk dijual.',
+                        question: 'Berdasarkan ilustrasi tersebut, peran pelaku ekonomi yang dijalankan oleh Bu Rina adalah sebagai...',
+                        options: [
+                            'Konsumen',
+                            'Distributor',
+                            'Produsen',
+                            'Importir'
+                        ],
+                        answer: 2,
+                        explain: 'Produsen adalah orang atau badan usaha yang menghasilkan barang atau menambah nilai guna suatu benda (mengubah kain menjadi baju seragam).'
+                    },
+                    // No. 12 | C4 | PG | Menganalisis kegiatan distribusi
+                    {
+                        noSoal: 12,
+                        kognitif: 'C4',
+                        type: 'mc',
+                        indicator: 'Menganalisis kegiatan distribusi',
+                        question: 'Hasil panen sayur-sayuran dari petani di dataran tinggi Dieng diangkut menggunakan mobil bak terbuka menuju pasar induk di kota agar dapat dibeli oleh warga. Analisis fungsi utama kegiatan distribusi tersebut adalah...',
+                        options: [
+                            'Menyalurkan barang dari produsen agar sampai ke tangan konsumen secara merata',
+                            'Mengurangi kualitas barang agar harganya menjadi sangat mahal',
+                            'Menghabiskan nilai guna barang tanpa melibatkan pedagang',
+                            'Menghentikan proses produksi petani di dataran tinggi'
+                        ],
+                        answer: 0,
+                        explain: 'Distribusi adalah kegiatan menyalurkan barang/jasa dari produsen (petani) kepada konsumen (pembeli di pasar) sehingga kebutuhan masyarakat terpenuhi.'
+                    },
+                    // No. 13 | C3 | PG | Kegiatan ekonomi sesuai kondisi geografis
+                    {
+                        noSoal: 13,
+                        kognitif: 'C3',
+                        type: 'mc',
+                        indicator: 'Menentukan kegiatan ekonomi sesuai kondisi geografis',
+                        question: 'Pak Budi tinggal di daerah dataran tinggi yang berudara sejuk dan memiliki tanah subur. Kegiatan ekonomi yang paling sesuai diterapkan oleh Pak Budi adalah...',
+                        options: [
+                            'Membuka tambak garam dan menjadi nelayan penangkap tuna',
+                            'Membuka perkebunan teh, sayuran kol, wortel, dan kentang',
+                            'Membangun galangan kapal besar di tepi samudra',
+                            'Menjadi pemandu wisata selam terumbu karang'
+                        ],
+                        answer: 1,
+                        explain: 'Kondisi geografis dataran tinggi dengan suhu sejuk sangat cocok untuk perkebunan teh, kopi, serta pertanian sayuran dan buah-buahan.'
+                    },
+                    // No. 14 | C4 | Benar Salah | Sikap bijak pelaku ekonomi
+                    {
+                        noSoal: 14,
+                        kognitif: 'C4',
+                        type: 'tf',
+                        indicator: 'Menganalisis sikap bijak dalam kegiatan ekonomi',
+                        contextTitle: '🛒 Pernyataan Sikap Konsumen & Produsen',
+                        context: '“Sebagai pelaku ekonomi yang bijak, seorang konsumen sebaiknya menyusun daftar prioritas kebutuhan sebelum berbelanja, sedangkan produsen menjaga kelestarian alam dan tidak memakai bahan berbahaya.”',
+                        question: 'Analisislah pernyataan mengenai sikap bijak dalam kegiatan ekonomi sehari-hari di atas! Apakah pernyataan tersebut BENAR atau SALAH?',
+                        answer: true,
+                        explain: 'Pernyataan tersebut BENAR. Konsumen yang bijak mendahulukan kebutuhan pokok daripada keinginan sesaat, dan produsen yang bertanggung jawab menjaga mutu produk serta kelestarian lingkungan.'
+                    },
+                    // No. 34 | C2 | Isian Singkat | Contoh kebutuhan primer
+                    {
+                        noSoal: 34,
+                        kognitif: 'C2',
+                        type: 'short',
+                        indicator: 'Menentukan contoh kebutuhan primer',
+                        question: 'Tiga kebutuhan primer utama manusia terdiri atas sandang (pakaian), papan (tempat tinggal), dan pangan. Contoh kebutuhan pangan pokok masyarakat Indonesia sehari-hari adalah...',
+                        placeholder: 'Ketik contoh kebutuhan pangan (misal: nasi / beras)...',
+                        accepted: ['nasi', 'beras', 'makanan', 'makan', 'air', 'minum', 'roti', 'sagu', 'jagung'],
+                        hint: 'Makanan pokok yang dimasak dari beras dan dimakan setiap hari.',
+                        explain: 'Contoh kebutuhan primer bidang pangan antara lain nasi (beras), lauk-pauk, sayuran, dan air minum.'
+                    },
+                    // No. 35 | C2 | Isian Singkat | Produksi ekstraktif
+                    {
+                        noSoal: 35,
+                        kognitif: 'C2',
+                        type: 'short',
+                        indicator: 'Mengidentifikasi kegiatan produksi ekstraktif',
+                        question: 'Kegiatan produksi yang mengambil langsung sumber daya yang telah tersedia di alam tanpa mengubah bentuknya terlebih dahulu (seperti menangkap ikan di laut dan menambang batu bara) disebut produksi...',
+                        placeholder: 'Ketik jenis produksi (1 kata)...',
+                        accepted: ['ekstraktif', 'produksi ekstraktif'],
+                        hint: 'Istilah bidang produksi yang diawali huruf E (ekstrak-...).',
+                        explain: 'Produksi ekstraktif adalah kegiatan produksi yang mengambil langsung kekayaan alam, seperti perikanan tangkap, pertambangan, dan hasil hutan.'
+                    },
+                    // No. 43 | C3 | ESSAI | Kegiatan ekonomi masyarakat pesisir
+                    {
+                        noSoal: 43,
+                        kognitif: 'C3',
+                        type: 'essay',
+                        indicator: 'Menyebutkan kegiatan ekonomi masyarakat pesisir',
+                        question: 'Sebutkan minimal 3 contoh kegiatan ekonomi yang dilakukan oleh masyarakat di daerah pesisir pantai!',
+                        placeholder: 'Tuliskan 3 contoh kegiatan ekonomi pesisir...',
+                        keywords: ['nelayan', 'ikan', 'garam', 'tambak', 'udang', 'bandeng', 'wisata', 'bahari', 'kerajinan', 'kerang', 'perahu', 'pengolahan'],
+                        minMatches: 2,
+                        modelAnswer: 'Contoh kegiatan ekonomi masyarakat pesisir pantai antara lain: (1) Menjadi nelayan penangkap ikan, (2) Petani tambak garam, udang, atau ikan bandeng, (3) Pengolahan hasil laut (ikan asin, terasi, kerupuk ikan), dan (4) Jasa pariwisata pantai serta kerajinan kerang.',
+                        explain: 'Kunci jawaban essai: Nelayan penangkap ikan, petani tambak garam/udang, pengolah hasil laut (ikan asin), pembuat perahu, dan pelaku wisata bahari.'
+                    }
+                ]
+            },
+            {
+                id: 2,
+                name: 'Rimba Ekosistem',
+                topic: 'Ekosistem, Rantai & Jaring Makanan (No. 15–22, 36–38, 44)',
+                icon: '🌿',
+                shipPos: { x: 555, y: 230 },
+                questions: [
+                    // No. 15 | C1 | PG | Pengertian komponen biotik
+                    {
+                        noSoal: 15,
+                        kognitif: 'C1',
+                        type: 'mc',
+                        indicator: 'Mengidentifikasi pengertian komponen biotik',
+                        question: 'Dalam suatu ekosistem terdapat komponen biotik dan abiotik. Yang dimaksud dengan komponen biotik adalah...',
+                        options: [
+                            'Semua benda mati di lingkungan seperti air, tanah, udara, dan cahaya matahari',
+                            'Semua makhluk hidup yang ada di dalam ekosistem seperti manusia, hewan, tumbuhan, dan mikroorganisme',
+                            'Perubahan cuaca dan suhu udara di suatu wilayah',
+                            'Batuan mineral dan kandungan garam di dasar lautan'
+                        ],
+                        answer: 1,
+                        explain: 'Komponen biotik berasal dari kata "bio" yang berarti hidup, yakni seluruh makhluk hidup dalam ekosistem (tumbuhan, hewan, manusia, dan pengurai).'
+                    },
+                    // No. 16 | C3 | PG | Tingkatan organisasi kehidupan (komunitas)
+                    {
+                        noSoal: 16,
+                        kognitif: 'C3',
+                        type: 'mc',
+                        indicator: 'Menentukan tingkatan organisasi kehidupan (komunitas)',
+                        contextTitle: '🌻 Ilustrasi Ekosistem Kebun',
+                        context: 'Di sebuah kebun sekolah hidup bersama sekumpulan pohon mangga, sekumpulan rumput teki, sekelompok semut merah, beberapa ekor kupu-kupu, dan seekor bunglon.',
+                        question: 'Kumpulan berbagai populasi makhluk hidup yang berbeda jenis dan saling berinteraksi di kebun sekolah tersebut membentuk tingkatan organisasi kehidupan yang disebut...',
+                        options: [
+                            'Individu',
+                            'Populasi',
+                            'Komunitas',
+                            'Biosfer'
+                        ],
+                        answer: 2,
+                        explain: 'Individu adalah satu makhluk hidup tunggal; populasi adalah kumpulan individu sejenis; sedangkan komunitas adalah kumpulan berbagai populasi berbeda jenis yang hidup bersama di suatu tempat.'
+                    },
+                    // No. 17 | C2 | PG | Gambar rantai makanan (menentukan produsen)
+                    {
+                        noSoal: 17,
+                        kognitif: 'C2',
+                        type: 'mc',
+                        indicator: 'Menentukan organisme produsen pada gambar rantai makanan',
+                        contextTitle: '🌾 Amati Gambar Rantai Makanan Ekosistem Sawah',
+                        visualKey: 'rantai17',
+                        question: 'Berdasarkan gambar rantai makanan di atas, organisme yang berperan sebagai produsen adalah...',
+                        options: [
+                            'Padi',
+                            'Tikus',
+                            'Ular',
+                            'Elang'
+                        ],
+                        answer: 0,
+                        explain: 'Padi berperan sebagai produsen karena merupakan tumbuhan hijau yang dapat membuat makanannya sendiri melalui proses fotosintesis.'
+                    },
+                    // No. 18 | C4 | PG | Dampak perubahan abiotik (kekurangan air) terhadap biotik
+                    {
+                        noSoal: 18,
+                        kognitif: 'C4',
+                        type: 'mc',
+                        indicator: 'Menganalisis dampak kekurangan air terhadap komponen biotik',
+                        contextTitle: '🏜️ Daftar Komponen Ekosistem Kolam & Sawah',
+                        context: 'Komponen ekosistem: (1) Air, (2) Tanah, (3) Tanaman padi, (4) Ikan kecil, (5) Katak, (6) Cahaya matahari.',
+                        question: 'Apabila terjadi musim kemarau panjang sehingga komponen abiotik berupa air mengalami kekeringan ekstrem, analisis dampak yang paling tepat terhadap komponen biotik adalah...',
+                        options: [
+                            'Tanaman padi akan tumbuh semakin subur dan populasi ikan kecil bertambah pesat',
+                            'Tanaman padi layu hingga mati dan populasi ikan serta katak menurun drastis karena kehilangan habitat dan sumber minum',
+                            'Komponen biotik tidak terpengaruh sama sekali karena makhluk hidup tidak membutuhkan air',
+                            'Ikan kecil akan berubah menjadi tumbuhan hijau untuk bertahan hidup'
+                        ],
+                        answer: 1,
+                        explain: 'Komponen abiotik (air) sangat memengaruhi komponen biotik. Kekurangan air menyebabkan tumbuhan layu/mati dan hewan air seperti ikan serta katak kehilangan tempat hidup.'
+                    },
+                    // No. 19 | C4 | PG | Dampak penggunaan pestisida berlebihan
+                    {
+                        noSoal: 19,
+                        kognitif: 'C4',
+                        type: 'mc',
+                        indicator: 'Menganalisis dampak penggunaan pestisida berlebihan di sawah',
+                        question: 'Seorang petani menyemprotkan pestisida kimia secara berlebihan untuk membasmi hama serangga di sawah. Dampak jangka panjang yang dapat dianalisis terhadap keseimbangan ekosistem sawah adalah...',
+                        options: [
+                            'Populasi katak dan burung pemakan serangga meningkat tajam karena makanan melimpah',
+                            'Organisme bukan hama seperti katak, cacing tanah, dan musuh alami ikut mati sehingga keseimbangan ekosistem terganggu',
+                            'Kesuburan tanah meningkat pesat dan air sungai menjadi lebih jernih',
+                            'Rantai makanan di sawah menjadi semakin stabil tanpa gangguan apa pun'
+                        ],
+                        answer: 1,
+                        explain: 'Pestisida berlebihan tidak hanya membunuh hama sasaran, tetapi juga meracuni organisme bermanfaat (cacing penyubur tanah, katak, belut) dan mencemari tanah serta air.'
+                    },
+                    // No. 20 | C2 | PG | Gambar piramida makanan (populasi/energi paling sedikit)
+                    {
+                        noSoal: 20,
+                        kognitif: 'C2',
+                        type: 'mc',
+                        indicator: 'Mengidentifikasi tingkat tropik dengan energi/populasi paling sedikit',
+                        contextTitle: '🔺 Amati Gambar Piramida Makanan Berikut',
+                        visualKey: 'piramida20',
+                        question: 'Berdasarkan gambar piramida makanan di atas, tingkat tropik yang memiliki jumlah populasi dan energi paling sedikit adalah...',
+                        options: [
+                            'Tingkat I (Tumbuhan Hijau)',
+                            'Tingkat II (Belalang & Tikus)',
+                            'Tingkat III (Ular & Katak)',
+                            'Tingkat IV (Elang / Konsumen Puncak)'
+                        ],
+                        answer: 3,
+                        explain: 'Pada piramida makanan, semakin ke atas tingkat tropiknya maka energi dan jumlah populasinya semakin mengecil. Tingkat IV (Elang) berada di puncak sehingga populasinya paling sedikit.'
+                    },
+                    // No. 21 | C2 | PG | Kegiatan manusia yang mendukung keseimbangan ekosistem
+                    {
+                        noSoal: 21,
+                        kognitif: 'C2',
+                        type: 'mc',
+                        indicator: 'Menentukan kegiatan manusia yang mendukung keseimbangan ekosistem',
+                        question: 'Manakah kegiatan manusia berikut yang mendukung kelestarian dan keseimbangan ekosistem?',
+                        options: [
+                            'Menangkap ikan di sungai menggunakan racun dan setrum listrik',
+                            'Melakukan reboisasi (penanaman kembali hutan gundul) dan sistem tebang pilih',
+                            'Membuka lahan perkebunan dengan cara membakar hutan secara luas',
+                            'Memburu hewan langka untuk dijadikan hiasan dinding'
+                        ],
+                        answer: 1,
+                        explain: 'Reboisasi dan tebang pilih menjaga kelestarian tumbuhan sebagai produsen sekaligus melindungi habitat satwa di dalam ekosistem hutan.'
+                    },
+                    // No. 22 | C4 | MCMA | Gambar jaring-jaring makanan (pilih lebih dari satu)
+                    {
+                        noSoal: 22,
+                        kognitif: 'C4',
+                        type: 'mcma',
+                        indicator: 'Menganalisis pernyataan benar pada jaring-jaring makanan',
+                        contextTitle: '🕸️ Amati Gambar Jaring-Jaring Makanan Berikut',
+                        visualKey: 'jaring22',
+                        question: 'Analisislah gambar jaring-jaring makanan di atas! Pilihlah DUA (2) pernyataan yang BENAR mengenai peran dan interaksi antarorganisme tersebut:',
+                        options: [
+                            'Tikus berperan sebagai konsumen tingkat I karena memakan tumbuhan secara langsung',
+                            'Elang hanya mendapatkan energi dari satu jenis hewan saja yaitu kelinci',
+                            'Jika populasi ular menurun drastis, populasi tikus dan belalang berpotensi meningkat',
+                            'Tumbuhan berperan sebagai konsumen puncak dalam jaring-jaring makanan tersebut'
+                        ],
+                        answers: [0, 2],
+                        explain: 'Pernyataan 1 benar (tikus memakan tumbuhan = konsumen I) dan pernyataan 3 benar (ular memangsa tikus dan belalang, sehingga jika ular berkurang, tikus dan belalang meningkat). Elang memakan kelinci, tikus, dan ular; tumbuhan adalah produsen.'
+                    },
+                    // No. 36 | C1 | Isian Singkat | Pengertian jaring-jaring makanan
+                    {
+                        noSoal: 36,
+                        kognitif: 'C1',
+                        type: 'short',
+                        indicator: 'Menjelaskan pengertian jaring-jaring makanan',
+                        question: 'Sekumpulan dari beberapa rantai makanan yang saling berhubungan dan tumpang tindih dalam suatu ekosistem disebut...',
+                        placeholder: 'Ketik istilah yang tepat...',
+                        accepted: ['jaring-jaring makanan', 'jaring jaring makanan', 'jaring makanan'],
+                        hint: 'Gabungan banyak rantai makanan yang membentuk pola seperti jaring.',
+                        explain: 'Jaring-jaring makanan adalah kumpulan beberapa rantai makanan yang saling berhubungan dalam suatu ekosistem.'
+                    },
+                    // No. 37 | C1 | Isian Singkat | Istilah organisme pembuat makanan sendiri
+                    {
+                        noSoal: 37,
+                        kognitif: 'C1',
+                        type: 'short',
+                        indicator: 'Menyebutkan istilah organisme pembuat makanan sendiri',
+                        question: 'Organisme (seperti tumbuhan hijau) yang mampu membuat makanannya sendiri melalui fotosintesis disebut produsen atau organisme...',
+                        placeholder: 'Ketik istilah ilmiahnya (autotrof / produsen)...',
+                        accepted: ['autotrof', 'produsen', 'organisme autotrof'],
+                        hint: 'Istilah ilmiah yang diawali kata "auto-" (sendiri).',
+                        explain: 'Organisme yang dapat membuat makanannya sendiri disebut produsen atau organisme autotrof.'
+                    },
+                    // No. 38 | C1 | Isian Singkat | Istilah hewan pemakan tumbuhan
+                    {
+                        noSoal: 38,
+                        kognitif: 'C1',
+                        type: 'short',
+                        indicator: 'Menyebutkan istilah hewan pemakan tumbuhan',
+                        question: 'Berdasarkan jenis makanannya, kelompok hewan pemakan tumbuhan seperti sapi, kelinci, dan belalang disebut...',
+                        placeholder: 'Ketik istilah pengelompokan hewannya...',
+                        accepted: ['herbivora', 'herbivor'],
+                        hint: 'Istilah yang diawali kata "herbi-" (tumbuhan).',
+                        explain: 'Hewan pemakan tumbuhan disebut herbivora (herbivor).'
+                    },
+                    // No. 44 | C2 | ESSAI | Peran organisme pada rantai makanan (rumput, belalang, katak, ular, elang)
+                    {
+                        noSoal: 44,
+                        kognitif: 'C2',
+                        type: 'essay',
+                        indicator: 'Menjelaskan peran organisme pada rantai makanan secara runtut',
+                        contextTitle: '🌿 Amati Gambar Rantai Makanan Berikut',
+                        visualKey: 'rantai44',
+                        question: 'Jelaskan peran masing-masing organisme (rumput, belalang, katak, ular, dan elang) pada gambar rantai makanan di atas secara runtut!',
+                        placeholder: 'Contoh: Rumput sebagai produsen, belalang sebagai...',
+                        keywords: ['produsen', 'konsumen', 'rumput', 'belalang', 'katak', 'ular', 'elang'],
+                        minMatches: 4,
+                        modelAnswer: 'Peran organisme secara runtut: (1) Rumput sebagai produsen, (2) Belalang sebagai konsumen tingkat I (konsumen primer), (3) Katak sebagai konsumen tingkat II (konsumen sekunder), (4) Ular sebagai konsumen tingkat III (konsumen tersier), dan (5) Elang sebagai konsumen tingkat IV / konsumen puncak.',
+                        explain: 'Kunci jawaban essai: Rumput (Produsen) → Belalang (Konsumen I) → Katak (Konsumen II) → Ular (Konsumen III) → Elang (Konsumen IV / Puncak).'
+                    }
+                ]
+            },
+            {
+                id: 3,
+                name: 'Menara Siklus Air',
+                topic: 'Siklus Air & Pelestariannya (No. 23–30, 39–40, 45)',
+                icon: '💧',
+                shipPos: { x: 755, y: 112 },
+                questions: [
+                    // No. 23 | C2 | PG | Faktor utama penyebab berkurangnya air tanah
+                    {
+                        noSoal: 23,
+                        kognitif: 'C2',
+                        type: 'mc',
+                        indicator: 'Mengidentifikasi faktor utama penyebab berkurangnya air',
+                        question: 'Faktor utama yang menyebabkan berkurangnya cadangan air tanah bersih di daerah perkotaan adalah...',
+                        options: [
+                            'Banyaknya taman kota dan hutan lindung di sekitar permukiman',
+                            'Penebangan pohon secara liar dan tertutupnya tanah oleh beton serta aspal sehingga air hujan sulit meresap',
+                            'Pembuatan sumur resapan dan lubang biopori di halaman rumah',
+                            'Tingginya curah hujan di wilayah pegunungan yang masih hijau'
+                        ],
+                        answer: 1,
+                        explain: 'Penebangan hutan/pohon dan betonisasi (aspal) mengurangi daerah resapan air sehingga air hujan langsung mengalir ke selokan/sungai dan tidak tersimpan sebagai air tanah.'
+                    },
+                    // No. 24 | C2 | PG | Fungsi siklus air pada kehidupan sehari-hari
+                    {
+                        noSoal: 24,
+                        kognitif: 'C2',
+                        type: 'mc',
+                        indicator: 'Menyebutkan fungsi siklus air dalam kehidupan sehari-hari',
+                        question: 'Fungsi utama siklus air (daur hidrologi) bagi kehidupan makhluk hidup di bumi adalah...',
+                        options: [
+                            'Menghilangkan seluruh air tawar di sungai dan danau',
+                            'Menjaga ketersediaan air bersih di bumi secara terus-menerus untuk minum, pertanian, dan kehidupan',
+                            'Membuat suhu bumi menjadi sangat panas sepanjang tahun',
+                            'Mengubah seluruh air tawar menjadi air laut yang asin'
+                        ],
+                        answer: 1,
+                        explain: 'Siklus air memutar dan memurnikan air secara alami sehingga ketersediaan air bersih di bumi tetap terjaga untuk manusia, hewan, dan tumbuhan.'
+                    },
+                    // No. 25 | C2 | PG | Tahapan siklus air sesuai peristiwa
+                    {
+                        noSoal: 25,
+                        kognitif: 'C2',
+                        type: 'mc',
+                        indicator: 'Menyebutkan tahapan siklus air sesuai peristiwa',
+                        contextTitle: '☁️ Peristiwa Alam di Langit',
+                        context: 'Uap air yang naik ke atmosfer mengalami pendinginan pada ketinggian tertentu sehingga berubah menjadi titik-titik air kecil yang berkumpul membentuk gumpalan awan.',
+                        question: 'Tahapan siklus air yang sesuai dengan peristiwa tersebut dinamakan...',
+                        options: [
+                            'Evaporasi',
+                            'Kondensasi',
+                            'Presipitasi',
+                            'Infiltrasi'
+                        ],
+                        answer: 1,
+                        explain: 'Kondensasi (pengembunan) adalah proses berubahnya uap air menjadi titik-titik air akibat suhu udara yang dingin di atmosfer hingga membentuk awan.'
+                    },
+                    // No. 26 | C2 | PG | Akibat yang mempengaruhi siklus air
+                    {
+                        noSoal: 26,
+                        kognitif: 'C2',
+                        type: 'mc',
+                        indicator: 'Mengidentifikasi akibat terganggunya siklus air',
+                        question: 'Jika daerah hulu sungai mengalami penggundulan hutan yang parah, akibat yang terjadi pada siklus air saat musim hujan dan kemarau adalah...',
+                        options: [
+                            'Air tanah selalu melimpah di musim kemarau dan tidak pernah terjadi banjir',
+                            'Terjadi banjir dan tanah longsor saat musim hujan, serta kekeringan saat musim kemarau',
+                            'Proses penguapan air laut terhenti untuk selamanya',
+                            'Awan hujan tidak akan pernah terbentuk lagi di atas lautan'
+                        ],
+                        answer: 1,
+                        explain: 'Tanpa akar pohon untuk menahan dan menyerap air, air hujan langsung melimpas memicu banjir saat hujan dan cadangan air tanah habis saat kemarau (kekeringan).'
+                    },
+                    // No. 27 | C2 | PG | Cara menjaga ketersediaan air berdasarkan peristiwa
+                    {
+                        noSoal: 27,
+                        kognitif: 'C2',
+                        type: 'mc',
+                        indicator: 'Mengidentifikasi cara menjaga ketersediaan air dari peristiwa',
+                        contextTitle: '🏘️ Peristiwa di Lingkungan Sekolah',
+                        context: 'Halaman sekolah SDN 1 Bandung banyak ditutup paving blok rapat sehingga saat hujan deras air menggenang di permukaan dan tidak meresap ke dalam tanah.',
+                        question: 'Cara paling tepat yang dapat dilakukan warga sekolah untuk menjaga ketersediaan air tanah berdasarkan peristiwa tersebut adalah...',
+                        options: [
+                            'Menutup seluruh sisa tanah dengan semen cor agar terlihat rata',
+                            'Membuat lubang resapan biopori dan sumur resapan di area halaman sekolah',
+                            'Membuang sampah plastik ke dalam saluran air sekolah',
+                            'Menebang seluruh pohon peneduh di sekitar lapangan'
+                        ],
+                        answer: 1,
+                        explain: 'Lubang resapan biopori dan sumur resapan membantu mempercepat masuknya air hujan ke dalam tanah untuk menambah cadangan air tanah.'
+                    },
+                    // No. 28 | C2 | PG | Tindakan tepat menjaga ketersediaan air
+                    {
+                        noSoal: 28,
+                        kognitif: 'C2',
+                        type: 'mc',
+                        indicator: 'Mengidentifikasi tindakan tepat menjaga ketersediaan air',
+                        question: 'Tindakan sederhana di rumah yang paling tepat dilakukan untuk menjaga ketersediaan air bersih adalah...',
+                        options: [
+                            'Membiarkan keran air terus mengalir saat menggosok gigi',
+                            'Menutup keran air dengan rapat setelah selesai digunakan dan memakai air secukupnya',
+                            'Mencuci sepeda motor setiap hari menggunakan selang air bertekanan tinggi tanpa henti',
+                            'Membuang sisa minyak goreng ke dalam saluran air kamar mandi'
+                        ],
+                        answer: 1,
+                        explain: 'Menghemat penggunaan air dan menutup rapat keran setelah dipakai merupakan tindakan nyata melestarikan ketersediaan air bersih.'
+                    },
+                    // No. 29 | C2 | PG | Dampak bagi kesehatan yang mempengaruhi siklus air
+                    {
+                        noSoal: 29,
+                        kognitif: 'C2',
+                        type: 'mc',
+                        indicator: 'Menyebutkan dampak kesehatan akibat gangguan siklus air',
+                        question: 'Terganggunya siklus air yang menyebabkan pencemaran sumber air serta kelangkaan air bersih dapat menimbulkan dampak buruk bagi kesehatan manusia, yaitu munculnya penyakit...',
+                        options: [
+                            'Diare, kolera, tifus, dan penyakit kulit (gatal-gatal)',
+                            'Patah tulang dan keseleo pada pergelangan kaki',
+                            'Rabun jauh akibat terlalu dekat membaca buku',
+                            'Sakit gigi akibat jarang menggosok gigi'
+                        ],
+                        answer: 0,
+                        explain: 'Air yang tercemar kuman atau kekurangan air bersih untuk sanitasi memicu gangguan pencernaan (diare, kolera, tifus) dan infeksi kulit.'
+                    },
+                    // No. 30 | C2 | MCMA | Evaporasi, transpirasi, kondensasi, presipitasi
+                    {
+                        noSoal: 30,
+                        kognitif: 'C2',
+                        type: 'mcma',
+                        indicator: 'Mengidentifikasi pernyataan benar tentang tahapan siklus air',
+                        question: 'Perhatikan pernyataan mengenai tahapan siklus air berikut! Pilihlah DUA (2) pernyataan yang BENAR:',
+                        options: [
+                            'Evaporasi adalah proses penguapan air laut, sungai, dan danau akibat panas matahari',
+                            'Transpirasi adalah proses jatuhnya titik-titik air hujan dari awan ke permukaan bumi',
+                            'Presipitasi adalah proses turunnya air dari atmosfer ke bumi dalam bentuk hujan atau salju',
+                            'Kondensasi adalah proses meresapnya air hujan ke dalam pori-pori tanah'
+                        ],
+                        answers: [0, 2],
+                        explain: 'Pernyataan 1 (Evaporasi = penguapan perairan) dan pernyataan 3 (Presipitasi = hujan) adalah BENAR. Transpirasi adalah penguapan dari tumbuhan, sedangkan kondensasi adalah pengembunan membentuk awan.'
+                    },
+                    // No. 39 | C1 | Isian Singkat | Proses meresapnya air hujan ke dalam tanah
+                    {
+                        noSoal: 39,
+                        kognitif: 'C1',
+                        type: 'short',
+                        indicator: 'Menyebutkan istilah meresapnya air hujan ke tanah',
+                        question: 'Dalam tahapan siklus air, proses meresapnya air hujan ke dalam pori-pori tanah sehingga menjadi cadangan air tanah disebut...',
+                        placeholder: 'Ketik istilah tahapan siklus air...',
+                        accepted: ['infiltrasi', 'peresapan'],
+                        hint: 'Istilah tahapan siklus air yang diawali huruf I (infil-...).',
+                        explain: 'Infiltrasi adalah proses masuk dan meresapnya air hujan ke dalam tanah melalui pori-pori tanah.'
+                    },
+                    // No. 40 | C2 | Isian Singkat | Akibat pembuangan limbah rumah tangga ke sungai
+                    {
+                        noSoal: 40,
+                        kognitif: 'C2',
+                        type: 'short',
+                        indicator: 'Mengidentifikasi akibat pembuangan limbah ke sungai',
+                        question: 'Kebiasaan membuang sampah dan limbah detergen rumah tangga langsung ke aliran sungai akan mengakibatkan terjadinya ... air.',
+                        placeholder: 'Ketik 1 kata yang tepat...',
+                        accepted: ['pencemaran', 'polusi', 'kerusakan'],
+                        hint: 'Kondisi air menjadi kotor, berbau, dan beracun (pen-cemar-...).',
+                        explain: 'Pembuangan limbah rumah tangga ke sungai menyebabkan pencemaran air yang membahayakan biota sungai dan kesehatan manusia.'
+                    },
+                    // No. 45 | C2 | ESSAI | Urutan proses siklus air secara singkat
+                    {
+                        noSoal: 45,
+                        kognitif: 'C2',
+                        type: 'essay',
+                        indicator: 'Menjelaskan urutan proses siklus air secara singkat',
+                        question: 'Jelaskan urutan proses terjadinya siklus air secara singkat dan runtut!',
+                        placeholder: 'Jelaskan dari proses penguapan hingga air kembali ke bumi...',
+                        keywords: ['evaporasi', 'uap', 'kondensasi', 'awan', 'presipitasi', 'hujan', 'infiltrasi', 'meresap'],
+                        minMatches: 3,
+                        modelAnswer: 'Urutan proses siklus air: (1) Evaporasi & Transpirasi: air laut/sungai dan tumbuhan menguap karena panas matahari. (2) Kondensasi: uap air mendingin di atmosfer dan mengembun menjadi awan. (3) Presipitasi: titik air di awan jatuh ke bumi sebagai hujan. (4) Infiltrasi: air hujan meresap ke dalam tanah dan sebagian mengalir kembali ke sungai serta laut.',
+                        explain: 'Kunci jawaban essai: Evaporasi/Transpirasi (penguapan) → Kondensasi (pembentukan awan) → Presipitasi (hujan) → Infiltrasi (peresapan ke tanah) dan kembali ke laut.'
+                    }
+                ]
+            }
+        ];
+
+        const TOTAL_QUESTIONS = ISLANDS.reduce((sum, isl) => sum + isl.questions.length, 0); // 45 Soal sesuai kisi-kisi
+
+        /* =========================================================
+           4. STATE APLIKASI & PENYIMPANAN LOKAL
+           ========================================================= */
+        const STORAGE_KEY = 'hkbi_ipas5_asas_2026_v1';
+
+        let state = {
+            playerName: '',
+            schoolName: '',
+            avatarId: 'captain',
+            coins: 0,
+            streak: 0,
+            freeMode: false,
+            soundOn: true,
+            chestOpened: false,
+            certSerial: '',
+            islands: ISLANDS.map(isl => ({
+                completed: false,
+                bestCorrect: 0,
+                total: isl.questions.length,
+                answers: {}
+            }))
+        };
+
+        let activeQuiz = {
+            islandId: 0,
+            qIndex: 0,
+            sessionCorrect: 0,
+            answered: false,
+            selectedMcma: [],
+            shortNudged: false
+        };
+
+        /* =========================================================
+           5. SISTEM AUDIO (TONE.JS SYNTHESIS - AMAN & TANPA URL EKSTERNAL)
+           ========================================================= */
+        let mainSynth = null;
+
+        function ensureAudio() {
+            if (!state.soundOn) return false;
+            try {
+                if (typeof Tone === 'undefined') return false;
+                if (Tone.context.state !== 'running') {
+                    Tone.start();
+                }
+                if (!mainSynth) {
+                    mainSynth = new Tone.PolySynth(Tone.Synth, {
+                        oscillator: { type: 'triangle' },
+                        envelope: { attack: 0.02, decay: 0.15, sustain: 0.1, release: 0.3 }
+                    }).toDestination();
+                    mainSynth.volume.value = -8;
+                }
+                return true;
+            } catch (err) {
+                return false;
+            }
+        }
+
+        function playSound(type) {
+            if (!ensureAudio()) return;
+            try {
+                const now = Tone.now();
+                if (type === 'click') {
+                    mainSynth.triggerAttackRelease('C5', '32n', now);
+                } else if (type === 'correct') {
+                    mainSynth.triggerAttackRelease('C5', '16n', now);
+                    mainSynth.triggerAttackRelease('E5', '16n', now + 0.09);
+                    mainSynth.triggerAttackRelease('G5', '8n', now + 0.18);
+                } else if (type === 'wrong') {
+                    mainSynth.triggerAttackRelease('E3', '16n', now);
+                    mainSynth.triggerAttackRelease('C3', '8n', now + 0.12);
+                } else if (type === 'unlock') {
+                    ['C5', 'E5', 'G5', 'C6'].forEach((note, idx) => {
+                        mainSynth.triggerAttackRelease(note, '8n', now + idx * 0.1);
+                    });
+                } else if (type === 'fanfare') {
+                    mainSynth.triggerAttackRelease(['C4', 'E4', 'G4'], '8n', now);
+                    mainSynth.triggerAttackRelease(['F4', 'A4', 'C5'], '8n', now + 0.18);
+                    mainSynth.triggerAttackRelease(['G4', 'B4', 'D5'], '8n', now + 0.36);
+                    mainSynth.triggerAttackRelease(['C5', 'E5', 'G5', 'C6'], '2n', now + 0.54);
+                }
+            } catch (err) {}
+        }
+
+        function toggleSound() {
+            state.soundOn = !state.soundOn;
+            document.getElementById('soundIcon').textContent = state.soundOn ? '🔊' : '🔇';
+            if (state.soundOn) playSound('click');
+            saveState();
+        }
+
+        /* =========================================================
+           6. CONFETTI PARTICLE ENGINE
+           ========================================================= */
+        let confettiParticles = [];
+        let confettiAnimId = null;
+
+        function launchConfetti(count = 110) {
+            const canvas = document.getElementById('confettiCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            const colors = ['#fbbf24', '#34d399', '#38bdf8', '#f472b6', '#a78bfa', '#fb7185', '#fde047'];
+            for (let i = 0; i < count; i++) {
+                confettiParticles.push({
+                    x: Math.random() * canvas.width,
+                    y: -20 - Math.random() * 140,
+                    w: 7 + Math.random() * 7,
+                    h: 5 + Math.random() * 6,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    vx: (Math.random() - 0.5) * 4,
+                    vy: 2.5 + Math.random() * 4.2,
+                    rot: Math.random() * 360,
+                    vrot: (Math.random() - 0.5) * 10
+                });
+            }
+
+            if (confettiAnimId) return;
+            function step() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                confettiParticles.forEach(p => {
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.rot += p.vrot;
+                    ctx.save();
+                    ctx.translate(p.x, p.y);
+                    ctx.rotate((p.rot * Math.PI) / 180);
+                    ctx.fillStyle = p.color;
+                    ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+                    ctx.restore();
+                });
+                confettiParticles = confettiParticles.filter(p => p.y < canvas.height + 30);
+                if (confettiParticles.length > 0) {
+                    confettiAnimId = requestAnimationFrame(step);
+                } else {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    confettiAnimId = null;
+                }
+            }
+            confettiAnimId = requestAnimationFrame(step);
+        }
+
+        window.addEventListener('resize', () => {
+            const canvas = document.getElementById('confettiCanvas');
+            if (canvas) {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+        });
+
+        /* =========================================================
+           7. UTILITAS STORAGE, TOAST, & PENENTUAN GELAR
+           ========================================================= */
+        function saveState() {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+            } catch (e) {}
+        }
+
+        function loadState() {
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                if (!raw) return null;
+                const parsed = JSON.parse(raw);
+                if (parsed && parsed.playerName && Array.isArray(parsed.islands) && parsed.islands.length === ISLANDS.length) {
+                    return parsed;
+                }
+            } catch (e) {}
+            return null;
+        }
+
+        let toastTimer = null;
+        function showToast(msg, icon = '🧭') {
+            const box = document.getElementById('toastBox');
+            document.getElementById('toastIcon').textContent = icon;
+            document.getElementById('toastMsg').textContent = msg;
+            box.classList.remove('hidden');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => box.classList.add('hidden'), 3000);
+        }
+
+        function getKeysCount() {
+            return state.islands.filter(isl => isl.completed).length;
+        }
+
+        function getTotalCorrect() {
+            return state.islands.reduce((sum, isl) => sum + isl.bestCorrect, 0);
+        }
+
+        function getFinalScore() {
+            return Math.round((getTotalCorrect() / TOTAL_QUESTIONS) * 100);
+        }
+
+        function getAwardTitle(score) {
+            if (score >= 90) {
+                return {
+                    title: 'Laksamana Agung IPAS Nusantara',
+                    icon: '👑',
+                    desc: 'Penguasa Samudra Sains & Sosial dengan ketepatan dan pemahaman luar biasa!'
+                };
+            } else if (score >= 75) {
+                return {
+                    title: 'Kapten Cendekia IPAS',
+                    icon: '⚓',
+                    desc: 'Penjelajah andal yang menguasai geografi, ekonomi, ekosistem, dan siklus air!'
+                };
+            } else if (score >= 60) {
+                return {
+                    title: 'Navigator Muda IPAS',
+                    icon: '🧭',
+                    desc: 'Petualang cerdas yang berani menaklukkan seluruh pulau tantangan ASAS!'
+                };
+            } else {
+                return {
+                    title: 'Kelasi Semangat IPAS',
+                    icon: '⛵',
+                    desc: 'Petualang pemberani yang pantang menyerah menyelesaikan 45 misi ASAS!'
+                };
+            }
+        }
+
+        function formatIndonesianDate(date = new Date()) {
+            const months = [
+                'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+                'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+            ];
+            return `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
+        }
+
+        function generateSerialNumber() {
+            const year = new Date().getFullYear();
+            const rand = Math.floor(1000 + Math.random() * 9000);
+            return `IPAS5-${year}-${rand}`;
+        }
+
+        /* =========================================================
+           8. INISIALISASI LAYAR AWAL & PEMILIHAN AVATAR
+           ========================================================= */
+        function renderAvatarSelector() {
+            const container = document.getElementById('avatarSelector');
+            container.innerHTML = AVATARS.map(av => {
+                const selected = state.avatarId === av.id;
+                return `
+                    <button type="button" onclick="selectAvatar('${av.id}')"
+                        class="p-3 rounded-2xl border-2 transition flex flex-col items-center gap-1.5 ${
+                            selected
+                                ? 'bg-amber-200 border-amber-600 shadow-md scale-[1.03]'
+                                : 'bg-white/80 border-amber-300 hover:bg-amber-50'
+                        }">
+                        <div class="w-14 h-14">${av.svg}</div>
+                        <span class="font-game text-xs font-bold text-amber-950">${av.label}</span>
+                    </button>
+                `;
+            }).join('');
+        }
+
+        function selectAvatar(id) {
+            state.avatarId = id;
+            playSound('click');
+            renderAvatarSelector();
+        }
+
+        function handleStartGame(e) {
+            e.preventDefault();
+            const nameVal = document.getElementById('inputName').value.trim();
+            const schoolVal = document.getElementById('inputSchool').value.trim();
+            const errBox = document.getElementById('startError');
+            const errText = document.getElementById('startErrorText');
+
+            if (!nameVal || !schoolVal) {
+                errText.textContent = 'Mohon isi Nama Lengkap dan Asal Sekolahmu terlebih dahulu ya!';
+                errBox.classList.remove('hidden');
+                errBox.classList.add('animate-shake');
+                setTimeout(() => errBox.classList.remove('animate-shake'), 450);
+                return;
+            }
+
+            errBox.classList.add('hidden');
+            state.playerName = nameVal;
+            state.schoolName = schoolVal;
+            state.coins = 0;
+            state.streak = 0;
+            state.chestOpened = false;
+            state.certSerial = generateSerialNumber();
+            state.islands = ISLANDS.map(isl => ({
+                completed: false,
+                bestCorrect: 0,
+                total: isl.questions.length,
+                answers: {}
+            }));
+            saveState();
+            playSound('unlock');
+            showScreen('map');
+        }
+
+        function resumeGame() {
+            const saved = loadState();
+            if (saved) {
+                state = saved;
+                if (!state.certSerial) state.certSerial = generateSerialNumber();
+                playSound('click');
+                showScreen('map');
+            }
+        }
+
+        /* =========================================================
+           9. NAVIGASI ANTAR LAYAR & HUD
+           ========================================================= */
+        function showScreen(screenName) {
+            const screens = ['screenStart', 'screenMap', 'screenQuiz', 'screenTreasure'];
+            screens.forEach(id => document.getElementById(id).classList.add('hidden'));
+
+            const hud = document.getElementById('topHud');
+            if (screenName === 'start') {
+                hud.classList.add('hidden');
+                document.getElementById('screenStart').classList.remove('hidden');
+            } else {
+                hud.classList.remove('hidden');
+                updateHUD();
+                if (screenName === 'map') {
+                    document.getElementById('screenMap').classList.remove('hidden');
+                    renderMap();
+                } else if (screenName === 'quiz') {
+                    document.getElementById('screenQuiz').classList.remove('hidden');
+                } else if (screenName === 'treasure') {
+                    document.getElementById('screenTreasure').classList.remove('hidden');
+                    renderTreasureScreen();
+                }
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function updateHUD() {
+            const av = AVATARS.find(a => a.id === state.avatarId) || AVATARS[0];
+            document.getElementById('hudAvatar').innerHTML = av.svg;
+            document.getElementById('hudName').textContent = state.playerName;
+            document.getElementById('hudSchool').textContent = state.schoolName;
+            document.getElementById('hudCoins').textContent = state.coins;
+            document.getElementById('hudKeys').textContent = `${getKeysCount()}/4`;
+            document.getElementById('soundIcon').textContent = state.soundOn ? '🔊' : '🔇';
+        }
+
+        function backToMap() {
+            playSound('click');
+            showScreen('map');
+        }
+
+        /* =========================================================
+           10. RENDER PETA HARTA KARUN & STATUS PULAU
+           ========================================================= */
+        function isIslandUnlocked(index) {
+            if (state.freeMode) return true;
+            if (index === 0) return true;
+            return state.islands[index - 1].completed;
+        }
+
+        function toggleFreeMode() {
+            state.freeMode = !state.freeMode;
+            playSound('click');
+            saveState();
+            renderMap();
+            showToast(
+                state.freeMode
+                    ? 'Mode Bebas Aktif: Semua pulau dapat dijelajahi kapan saja!'
+                    : 'Mode Petualangan Berurutan Aktif.',
+                state.freeMode ? '🔓' : '🧭'
+            );
+        }
+
+        function renderMap() {
+            const keys = getKeysCount();
+            document.getElementById('btnFreeMode').textContent = state.freeMode
+                ? '🔓 Mode Bebas: AKTIF'
+                : '🔒 Mode Bebas: MATI';
+
+            let shipTarget = ISLANDS[0].shipPos;
+            for (let i = 0; i < ISLANDS.length; i++) {
+                if (isIslandUnlocked(i) && !state.islands[i].completed) {
+                    shipTarget = ISLANDS[i].shipPos;
+                    break;
+                }
+                if (state.islands[i].completed) {
+                    shipTarget = ISLANDS[i].shipPos;
+                }
+            }
+            if (keys === 4) {
+                shipTarget = { x: 895, y: 255 };
+            }
+            const shipEl = document.getElementById('svgShip');
+            shipEl.setAttribute('transform', `translate(${shipTarget.x}, ${shipTarget.y})`);
+
+            ISLANDS.forEach((isl, idx) => {
+                const prog = state.islands[idx];
+                const unlocked = isIslandUnlocked(idx);
+                const g = document.getElementById(`svgIsland${idx}`);
+                const st = document.getElementById(`svgStatus${idx}`);
+
+                g.style.opacity = unlocked ? '1' : '0.52';
+
+                const badgeCoords = [
+                    { x: 195, y: 245 },
+                    { x: 400, y: 132 },
+                    { x: 615, y: 242 },
+                    { x: 815, y: 122 }
+                ][idx];
+
+                if (prog.completed) {
+                    st.innerHTML = `<circle cx="${badgeCoords.x}" cy="${badgeCoords.y}" r="18" fill="#16a34a" stroke="#fef08a" stroke-width="3"/><text x="${badgeCoords.x}" y="${badgeCoords.y + 6}" text-anchor="middle" font-size="18">🗝️</text>`;
+                } else if (!unlocked) {
+                    st.innerHTML = `<circle cx="${badgeCoords.x}" cy="${badgeCoords.y}" r="18" fill="#475569" stroke="#cbd5e1" stroke-width="2.5"/><text x="${badgeCoords.x}" y="${badgeCoords.y + 6}" text-anchor="middle" font-size="16">🔒</text>`;
+                } else {
+                    st.innerHTML = `<circle cx="${badgeCoords.x}" cy="${badgeCoords.y}" r="18" fill="#f59e0b" stroke="#ffffff" stroke-width="3"/><text x="${badgeCoords.x}" y="${badgeCoords.y + 6}" text-anchor="middle" fill="#451a03" font-family="Fredoka" font-weight="bold" font-size="16">!</text>`;
+                }
+            });
+
+            const chestUnlocked = keys === 4;
+            const svgChest = document.getElementById('svgTreasureChest');
+            document.getElementById('svgChestEmoji').textContent = chestUnlocked ? (state.chestOpened ? '🏆' : '🧰') : '🎁';
+            document.getElementById('svgChestLabel').textContent = chestUnlocked ? '✨ Buka Harta!' : `🔒 ${keys}/4 Kunci`;
+            svgChest.style.opacity = chestUnlocked ? '1' : '0.65';
+
+            const readyBanner = document.getElementById('treasureReadyBanner');
+            if (chestUnlocked) {
+                readyBanner.classList.remove('hidden');
+            } else {
+                readyBanner.classList.add('hidden');
+            }
+
+            const grid = document.getElementById('islandCardsGrid');
+            grid.innerHTML = ISLANDS.map((isl, idx) => {
+                const prog = state.islands[idx];
+                const unlocked = isIslandUnlocked(idx);
+                const pct = Math.round((prog.bestCorrect / isl.questions.length) * 100);
+                const stars = prog.completed
+                    ? (pct >= 85 ? '⭐⭐⭐' : pct >= 60 ? '⭐⭐☆' : '⭐☆☆')
+                    : '☆☆☆';
+
+                return `
+                    <div class="parchment-card rounded-2xl p-4 flex flex-col justify-between gap-3 transition ${unlocked ? 'hover:-translate-y-1' : 'opacity-70 grayscale-[35%]'}">
+                        <div>
+                            <div class="flex items-center justify-between gap-2 mb-2">
+                                <span class="text-3xl">${isl.icon}</span>
+                                <span class="text-xs font-extrabold px-2.5 py-1 rounded-full ${
+                                    prog.completed
+                                        ? 'bg-emerald-100 text-emerald-800 border border-emerald-400'
+                                        : unlocked
+                                            ? 'bg-amber-200 text-amber-900 border border-amber-400'
+                                            : 'bg-slate-200 text-slate-600'
+                                }">
+                                    ${prog.completed ? '🗝️ Kunci Diraih' : unlocked ? '🧭 Siap Jelajah' : '🔒 Terkunci'}
+                                </span>
+                            </div>
+                            <h3 class="font-game text-lg font-bold text-amber-950 leading-tight">${isl.name}</h3>
+                            <p class="text-xs text-amber-900/80 font-semibold mt-1">${isl.topic}</p>
+                            <div class="mt-2.5 flex items-center justify-between text-xs font-bold text-amber-900">
+                                <span>${isl.questions.length} Tantangan</span>
+                                <span class="tracking-wider">${stars}</span>
+                            </div>
+                            ${prog.completed ? `<div class="mt-1 text-xs font-extrabold text-emerald-800">Skor Terbaik: ${prog.bestCorrect}/${isl.questions.length} (${pct}%)</div>` : ''}
+                        </div>
+                        <button onclick="enterIsland(${idx})"
+                            class="btn-game w-full py-2.5 rounded-xl font-bold text-sm ${
+                                !unlocked
+                                    ? 'bg-slate-300 text-slate-600 border-2 border-slate-400 cursor-not-allowed'
+                                    : prog.completed
+                                        ? 'btn-ocean'
+                                        : 'btn-gold'
+                            }">
+                            ${!unlocked ? '🔒 Selesaikan Pulau Sebelumnya' : prog.completed ? '🔁 Main Lagi (Tingkatkan Skor)' : '⛵ Jelajahi Pulau Ini'}
+                        </button>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function enterIsland(islandIdx) {
+            if (!isIslandUnlocked(islandIdx)) {
+                playSound('wrong');
+                showToast('Selesaikan pulau sebelumnya dulu untuk membuka rute ini!', '🔒');
+                return;
+            }
+            playSound('click');
+            activeQuiz = {
+                islandId: islandIdx,
+                qIndex: 0,
+                sessionCorrect: 0,
+                answered: false,
+                selectedMcma: [],
+                shortNudged: false
+            };
+            showScreen('quiz');
+            renderQuestion();
+        }
+
+        function tryOpenTreasure() {
+            if (getKeysCount() < 4) {
+                playSound('wrong');
+                showToast(`Kumpulkan 4 Kunci Emas dulu! Kamu baru punya ${getKeysCount()}/4 kunci.`, '🗝️');
+                return;
+            }
+            openTreasureScreen();
+        }
+
+        function openTreasureScreen() {
+            playSound('unlock');
+            showScreen('treasure');
+        }
+
+        /* =========================================================
+           11. MESIN KUIS INTERAKTIF (PG, BENAR/SALAH, MCMA, ISIAN SINGKAT, ESSAI)
+           ========================================================= */
+        function renderQuestion() {
+            const isl = ISLANDS[activeQuiz.islandId];
+            const q = isl.questions[activeQuiz.qIndex];
+            const total = isl.questions.length;
+
+            activeQuiz.answered = false;
+            activeQuiz.selectedMcma = [];
+            activeQuiz.shortNudged = false;
+
+            // Update Header Progres
+            document.getElementById('quizIslandTitle').textContent = `${isl.icon} ${isl.name}`;
+            document.getElementById('quizCounter').textContent = `${activeQuiz.qIndex + 1}/${total}`;
+            document.getElementById('quizProgressBar').style.width = `${((activeQuiz.qIndex + 1) / total) * 100}%`;
+
+            // Update Streak Badge
+            const streakEl = document.getElementById('quizStreakBadge');
+            if (state.streak >= 2) {
+                streakEl.textContent = `🔥 Kombo x${state.streak}`;
+                streakEl.classList.remove('hidden');
+            } else {
+                streakEl.classList.add('hidden');
+            }
+
+            // Update Nomor Soal Kisi-kisi, Ranah Kognitif, Indikator, & Bentuk Soal
+            document.getElementById('quizKisiBadge').textContent = `📋 Soal No. ${q.noSoal} • ${q.kognitif}`;
+            document.getElementById('quizIndicatorTag').textContent = `🎯 ${q.indicator}`;
+            const typeLabels = {
+                mc: '📝 Pilihan Ganda (PG)',
+                tf: '⚖️ Benar / Salah',
+                mcma: '☑️ Pilihan Ganda Kompleks (MCMA)',
+                short: '✏️ Isian Singkat',
+                essay: '📄 Essai / Uraian'
+            };
+            document.getElementById('quizTypeTag').textContent = typeLabels[q.type] || 'Tantangan';
+
+            // Tampilkan Kotak Stimulus / Visual SVG jika tersedia
+            const ctxBox = document.getElementById('quizContextBox');
+            const visSlot = document.getElementById('quizVisualSlot');
+            const ctxBody = document.getElementById('quizContextBody');
+
+            if (q.context || q.visualKey) {
+                document.getElementById('quizContextTitle').textContent = q.contextTitle || '📜 Stimulus Soal';
+                if (q.visualKey && VISUAL_STIMULI[q.visualKey]) {
+                    visSlot.innerHTML = VISUAL_STIMULI[q.visualKey];
+                    visSlot.classList.remove('hidden');
+                } else {
+                    visSlot.innerHTML = '';
+                    visSlot.classList.add('hidden');
+                }
+                if (q.context) {
+                    ctxBody.textContent = q.context;
+                    ctxBody.classList.remove('hidden');
+                } else {
+                    ctxBody.textContent = '';
+                    ctxBody.classList.add('hidden');
+                }
+                ctxBox.classList.remove('hidden');
+            } else {
+                ctxBox.classList.add('hidden');
+            }
+
+            // Tampilkan Pertanyaan
+            document.getElementById('quizQuestionText').textContent = q.question;
+
+            // Sembunyikan Umpan Balik
+            document.getElementById('quizFeedbackBox').classList.add('hidden');
+
+            // Render Area Jawaban Sesuai Bentuk Soal Kisi-Kisi
+            const area = document.getElementById('quizAnswerArea');
+
+            if (q.type === 'mc') {
+                const letters = ['A', 'B', 'C', 'D'];
+                area.innerHTML = `<div class="grid grid-cols-1 gap-3">${q.options.map((opt, idx) => `
+                    <button id="mcOpt${idx}" onclick="submitMC(${idx})"
+                        class="option-btn w-full text-left px-4 py-3.5 rounded-2xl flex items-center gap-3.5 text-amber-950 font-bold text-sm sm:text-base">
+                        <span class="w-9 h-9 rounded-xl bg-amber-200 border border-amber-400 text-amber-950 font-game font-bold flex items-center justify-center shrink-0">
+                            ${letters[idx]}
+                        </span>
+                        <span class="flex-1 leading-snug">${opt}</span>
+                    </button>
+                `).join('')}</div>`;
+            } else if (q.type === 'tf') {
+                area.innerHTML = `
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-1">
+                        <button id="tfBtnTrue" onclick="submitTF(true)"
+                            class="option-btn py-5 px-5 rounded-2xl flex flex-col items-center justify-center gap-1.5 text-emerald-900 font-bold text-lg">
+                            <span class="text-3xl">✅</span>
+                            <span class="font-game text-xl">BENAR</span>
+                        </button>
+                        <button id="tfBtnFalse" onclick="submitTF(false)"
+                            class="option-btn py-5 px-5 rounded-2xl flex flex-col items-center justify-center gap-1.5 text-rose-900 font-bold text-lg">
+                            <span class="text-3xl">❌</span>
+                            <span class="font-game text-xl">SALAH</span>
+                        </button>
+                    </div>
+                `;
+            } else if (q.type === 'mcma') {
+                renderMcmaInterface(q);
+            } else if (q.type === 'short') {
+                area.innerHTML = `
+                    <div class="space-y-3">
+                        <input id="shortAnswerInput" type="text" autocomplete="off"
+                            placeholder="${q.placeholder || 'Ketik jawaban singkatmu di sini...'}"
+                            onkeydown="if(event.key==='Enter'){ event.preventDefault(); submitShortAnswer(); }"
+                            class="w-full px-4 py-3.5 rounded-2xl border-2 border-amber-400 bg-white focus:outline-none focus:border-amber-600 focus:ring-4 focus:ring-amber-200 text-amber-950 font-bold text-base sm:text-lg shadow-inner" />
+                        <div id="shortHintBox" class="hidden bg-sky-50 border-2 border-sky-300 text-sky-900 rounded-xl p-3 text-xs sm:text-sm font-bold">
+                            💡 Petunjuk: ${q.hint || ''}
+                        </div>
+                        <div id="shortNudgeBox" class="hidden bg-amber-100 border-2 border-amber-500 text-amber-950 rounded-xl p-3 text-xs sm:text-sm font-bold animate-shake"></div>
+                        <div class="flex flex-wrap items-center justify-between gap-2.5 pt-1">
+                            <button type="button" onclick="showShortHint()" class="btn-game btn-ocean px-4 py-2.5 rounded-xl text-sm font-bold">
+                                💡 Lihat Petunjuk
+                            </button>
+                            <button id="btnSubmitShort" type="button" onclick="submitShortAnswer()" class="btn-game btn-gold px-6 py-3 rounded-xl text-base font-bold">
+                                ✅ Periksa Jawaban
+                            </button>
+                        </div>
+                    </div>
+                `;
+                setTimeout(() => {
+                    const inp = document.getElementById('shortAnswerInput');
+                    if (inp) inp.focus();
+                }, 120);
+            } else if (q.type === 'essay') {
+                area.innerHTML = `
+                    <div class="space-y-3">
+                        <textarea id="essayAnswerInput" rows="4"
+                            placeholder="${q.placeholder || 'Tuliskan penjelasan jawabanmu secara runtut di sini...'}"
+                            class="w-full px-4 py-3 rounded-2xl border-2 border-amber-400 bg-white focus:outline-none focus:border-amber-600 focus:ring-4 focus:ring-amber-200 text-amber-950 font-semibold text-sm sm:text-base shadow-inner"></textarea>
+                        <div id="essayNudgeBox" class="hidden bg-amber-100 border-2 border-amber-500 text-amber-950 rounded-xl p-3 text-xs sm:text-sm font-bold animate-shake"></div>
+                        <div class="flex flex-wrap items-center justify-between gap-2.5 pt-1">
+                            <span class="text-xs font-bold text-amber-800">✍️ Tulis penjelasan lengkap dengan kalimatmu sendiri.</span>
+                            <button id="btnSubmitEssay" type="button" onclick="submitEssayAnswer()" class="btn-game btn-gold px-6 py-3 rounded-xl text-base font-bold">
+                                ✅ Kirim Jawaban Essai
+                            </button>
+                        </div>
+                    </div>
+                `;
+                setTimeout(() => {
+                    const inp = document.getElementById('essayAnswerInput');
+                    if (inp) inp.focus();
+                }, 120);
+            }
+        }
+
+        /* --- Handler Pilihan Ganda (PG) --- */
+        function submitMC(chosenIdx) {
+            if (activeQuiz.answered) return;
+            activeQuiz.answered = true;
+
+            const q = ISLANDS[activeQuiz.islandId].questions[activeQuiz.qIndex];
+            const isCorrect = chosenIdx === q.answer;
+
+            q.options.forEach((_, idx) => {
+                const btn = document.getElementById(`mcOpt${idx}`);
+                btn.disabled = true;
+                if (idx === q.answer) {
+                    btn.classList.add('option-correct');
+                } else if (idx === chosenIdx && !isCorrect) {
+                    btn.classList.add('option-wrong');
+                }
+            });
+
+            finalizeAnswer(isCorrect, q.explain);
+        }
+
+        /* --- Handler Benar / Salah --- */
+        function submitTF(chosenBool) {
+            if (activeQuiz.answered) return;
+            activeQuiz.answered = true;
+
+            const q = ISLANDS[activeQuiz.islandId].questions[activeQuiz.qIndex];
+            const isCorrect = chosenBool === q.answer;
+
+            const btnT = document.getElementById('tfBtnTrue');
+            const btnF = document.getElementById('tfBtnFalse');
+            btnT.disabled = true;
+            btnF.disabled = true;
+
+            if (q.answer === true) {
+                btnT.classList.add('option-correct');
+                if (!isCorrect) btnF.classList.add('option-wrong');
+            } else {
+                btnF.classList.add('option-correct');
+                if (!isCorrect) btnT.classList.add('option-wrong');
+            }
+
+            finalizeAnswer(isCorrect, q.explain);
+        }
+
+        /* --- Handler Pilihan Ganda Kompleks (MCMA) --- */
+        function renderMcmaInterface(q) {
+            const area = document.getElementById('quizAnswerArea');
+            area.innerHTML = `
+                <div class="text-xs font-extrabold text-amber-800 uppercase">
+                    ☑️ Ketuk kotak pilihan yang benar (pilih ${q.answers.length} pernyataan), lalu tekan Periksa:
+                </div>
+                <div class="grid grid-cols-1 gap-3">
+                    ${q.options.map((opt, idx) => {
+                        const checked = activeQuiz.selectedMcma.includes(idx);
+                        return `
+                            <button id="mcmaOpt${idx}" type="button" onclick="toggleMcmaOption(${idx})"
+                                class="option-btn w-full text-left px-4 py-3.5 rounded-2xl flex items-center gap-3.5 text-amber-950 font-bold text-sm sm:text-base ${checked ? 'option-selected' : ''}">
+                                <span class="w-8 h-8 rounded-lg border-2 ${checked ? 'bg-amber-500 border-amber-700 text-white' : 'bg-white border-amber-400 text-transparent'} font-bold flex items-center justify-center shrink-0">
+                                    ✓
+                                </span>
+                                <span class="flex-1 leading-snug">${opt}</span>
+                            </button>
+                        `;
+                    }).join('')}
+                </div>
+                <div class="flex justify-end pt-2">
+                    <button id="btnSubmitMcma" type="button" onclick="submitMcmaAnswer()"
+                        ${activeQuiz.selectedMcma.length === 0 ? 'disabled' : ''}
+                        class="btn-game btn-gold px-6 py-3 rounded-xl text-base font-bold disabled:opacity-50 disabled:cursor-not-allowed">
+                        ✅ Periksa Pilihan (${activeQuiz.selectedMcma.length} Dipilih)
+                    </button>
+                </div>
+            `;
+        }
+
+        function toggleMcmaOption(idx) {
+            if (activeQuiz.answered) return;
+            playSound('click');
+            const pos = activeQuiz.selectedMcma.indexOf(idx);
+            if (pos > -1) {
+                activeQuiz.selectedMcma.splice(pos, 1);
+            } else {
+                activeQuiz.selectedMcma.push(idx);
+            }
+            renderMcmaInterface(ISLANDS[activeQuiz.islandId].questions[activeQuiz.qIndex]);
+        }
+
+        function submitMcmaAnswer() {
+            if (activeQuiz.answered) return;
+            const q = ISLANDS[activeQuiz.islandId].questions[activeQuiz.qIndex];
+            if (activeQuiz.selectedMcma.length === 0) return;
+
+            activeQuiz.answered = true;
+            const sortedChosen = [...activeQuiz.selectedMcma].sort((a, b) => a - b);
+            const sortedCorrect = [...q.answers].sort((a, b) => a - b);
+            const isCorrect =
+                sortedChosen.length === sortedCorrect.length &&
+                sortedChosen.every((val, i) => val === sortedCorrect[i]);
+
+            q.options.forEach((_, idx) => {
+                const btn = document.getElementById(`mcmaOpt${idx}`);
+                if (!btn) return;
+                btn.disabled = true;
+                btn.classList.remove('option-selected');
+                if (q.answers.includes(idx)) {
+                    btn.classList.add('option-correct');
+                } else if (activeQuiz.selectedMcma.includes(idx)) {
+                    btn.classList.add('option-wrong');
+                }
+            });
+            const subBtn = document.getElementById('btnSubmitMcma');
+            if (subBtn) subBtn.disabled = true;
+
+            finalizeAnswer(isCorrect, q.explain);
+        }
+
+        /* --- Handler Isian Singkat --- */
+        function showShortHint() {
+            playSound('click');
+            const box = document.getElementById('shortHintBox');
+            if (box) box.classList.remove('hidden');
+        }
+
+        function submitShortAnswer() {
+            if (activeQuiz.answered) return;
+            const q = ISLANDS[activeQuiz.islandId].questions[activeQuiz.qIndex];
+            const inputEl = document.getElementById('shortAnswerInput');
+            const nudgeBox = document.getElementById('shortNudgeBox');
+            const raw = inputEl.value.trim().replace(/\s+/g, ' ');
+
+            if (!raw) {
+                nudgeBox.textContent = '⚠️ Ketik jawaban singkatmu terlebih dahulu sebelum memeriksa ya!';
+                nudgeBox.classList.remove('hidden');
+                return;
+            }
+
+            const cleanLower = raw.toLowerCase().replace(/[.,!?]/g, '').trim();
+            const isCorrect = q.accepted.some(acc => {
+                const accClean = acc.toLowerCase().replace(/[.,!?]/g, '').trim();
+                return cleanLower === accClean || cleanLower.includes(accClean);
+            });
+
+            activeQuiz.answered = true;
+            nudgeBox.classList.add('hidden');
+            inputEl.disabled = true;
+            const submitBtn = document.getElementById('btnSubmitShort');
+            if (submitBtn) submitBtn.disabled = true;
+
+            if (isCorrect) {
+                inputEl.classList.add('border-emerald-500', 'bg-emerald-50');
+            } else {
+                inputEl.classList.add('border-rose-500', 'bg-rose-50');
+            }
+
+            finalizeAnswer(isCorrect, `${q.explain}\n(Jawaban yang diharapkan: ${q.accepted[0]})`);
+        }
+
+        /* --- Handler Essai / Uraian --- */
+        function submitEssayAnswer() {
+            if (activeQuiz.answered) return;
+            const q = ISLANDS[activeQuiz.islandId].questions[activeQuiz.qIndex];
+            const inputEl = document.getElementById('essayAnswerInput');
+            const nudgeBox = document.getElementById('essayNudgeBox');
+            const raw = inputEl.value.trim();
+
+            if (raw.length < 8) {
+                nudgeBox.textContent = '⚠️ Tuliskan penjelasan yang lebih lengkap (minimal 1 kalimat) sebelum mengirim ya!';
+                nudgeBox.classList.remove('hidden');
+                inputEl.focus();
+                return;
+            }
+
+            const lowerText = raw.toLowerCase();
+            let matchedCount = 0;
+            q.keywords.forEach(kw => {
+                if (lowerText.includes(kw.toLowerCase())) {
+                    matchedCount += 1;
+                }
+            });
+
+            const isCorrect = matchedCount >= (q.minMatches || 2);
+
+            activeQuiz.answered = true;
+            nudgeBox.classList.add('hidden');
+            inputEl.disabled = true;
+            const submitBtn = document.getElementById('btnSubmitEssay');
+            if (submitBtn) submitBtn.disabled = true;
+
+            if (isCorrect) {
+                inputEl.classList.add('border-emerald-500', 'bg-emerald-50');
+            } else {
+                inputEl.classList.add('border-rose-500', 'bg-rose-50');
+            }
+
+            finalizeAnswer(
+                isCorrect,
+                `📌 Contoh Jawaban Ideal:\n${q.modelAnswer}`
+            );
+        }
+
+        /* --- Finalisasi Jawaban, Skor, Koin, & Umpan Balik --- */
+        function finalizeAnswer(isCorrect, explanation) {
+            const isl = ISLANDS[activeQuiz.islandId];
+            const prog = state.islands[activeQuiz.islandId];
+
+            if (isCorrect) {
+                activeQuiz.sessionCorrect += 1;
+                state.streak += 1;
+                const bonus = state.streak >= 3 ? 25 : 0;
+                const earned = 100 + bonus;
+                state.coins += earned;
+                prog.answers[activeQuiz.qIndex] = true;
+                playSound('correct');
+                showFeedback(
+                    true,
+                    bonus > 0 ? `Luar Biasa! +${earned} Koin (Termasuk Bonus Kombo!)` : `Benar Sekali! +${earned} Koin Emas`,
+                    explanation
+                );
+            } else {
+                state.streak = 0;
+                playSound('wrong');
+                showFeedback(
+                    false,
+                    'Belum Tepat, Ayo Pelajari Pembahasannya!',
+                    explanation
+                );
+            }
+
+            updateHUD();
+            saveState();
+
+            const btnNext = document.getElementById('btnNextQuestion');
+            if (activeQuiz.qIndex === isl.questions.length - 1) {
+                btnNext.innerHTML = '🗝️ Selesaikan Pulau Ini!';
+            } else {
+                btnNext.innerHTML = 'Lanjut Tantangan <span>➡️</span>';
+            }
+        }
+
+        function showFeedback(isCorrect, title, explain) {
+            const box = document.getElementById('quizFeedbackBox');
+            box.classList.remove('hidden', 'bg-emerald-50', 'border-emerald-500', 'text-emerald-950', 'bg-rose-50', 'border-rose-400', 'text-rose-950');
+            if (isCorrect) {
+                box.classList.add('bg-emerald-50', 'border-emerald-500', 'text-emerald-950');
+                document.getElementById('feedbackIcon').textContent = '🌟';
+            } else {
+                box.classList.add('bg-rose-50', 'border-rose-400', 'text-rose-950');
+                document.getElementById('feedbackIcon').textContent = '🧭';
+            }
+            document.getElementById('feedbackTitle').textContent = title;
+            document.getElementById('feedbackExplain').textContent = explain;
+            box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function nextQuestion() {
+            playSound('click');
+            const isl = ISLANDS[activeQuiz.islandId];
+            if (activeQuiz.qIndex < isl.questions.length - 1) {
+                activeQuiz.qIndex += 1;
+                renderQuestion();
+            } else {
+                finishIsland();
+            }
+        }
+
+        function finishIsland() {
+            const isl = ISLANDS[activeQuiz.islandId];
+            const prog = state.islands[activeQuiz.islandId];
+            prog.completed = true;
+            if (activeQuiz.sessionCorrect > prog.bestCorrect) {
+                prog.bestCorrect = activeQuiz.sessionCorrect;
+            }
+            saveState();
+            updateHUD();
+
+            const pct = Math.round((activeQuiz.sessionCorrect / isl.questions.length) * 100);
+            const stars = pct >= 85 ? '⭐⭐⭐' : pct >= 60 ? '⭐⭐☆' : '⭐☆☆';
+
+            document.getElementById('modalDoneTitle').textContent = `${isl.name} Selesai!`;
+            document.getElementById('modalDoneStars').textContent = stars;
+            document.getElementById('modalDoneSummary').textContent =
+                `Kamu berhasil menjawab benar ${activeQuiz.sessionCorrect} dari ${isl.questions.length} soal (${pct}%).`;
+
+            const primaryBtn = document.getElementById('modalDonePrimaryBtn');
+            if (getKeysCount() === 4) {
+                primaryBtn.textContent = '🏆 Buka Peti Harta Karun & Sertifikat!';
+                primaryBtn.onclick = () => {
+                    document.getElementById('modalIslandDone').classList.add('hidden');
+                    openTreasureScreen();
+                };
+            } else {
+                primaryBtn.textContent = '🗺️ Kembali ke Peta Harta Karun';
+                primaryBtn.onclick = closeIslandDoneModal;
+            }
+
+            document.getElementById('modalIslandDone').classList.remove('hidden');
+            playSound('unlock');
+            launchConfetti(90);
+        }
+
+        function closeIslandDoneModal() {
+            document.getElementById('modalIslandDone').classList.add('hidden');
+            showScreen('map');
+        }
+
+        /* =========================================================
+           12. LAYAR HARTA KARUN, SERTIFIKAT, & EKSPOR PNG BERESOLUSI TINGGI
+           ========================================================= */
+        function renderTreasureScreen() {
+            if (state.chestOpened) {
+                document.getElementById('chestUnlockStage').classList.add('hidden');
+                document.getElementById('certificateStage').classList.remove('hidden');
+                populateCertificateUI();
+            } else {
+                document.getElementById('chestUnlockStage').classList.remove('hidden');
+                document.getElementById('certificateStage').classList.add('hidden');
+            }
+        }
+
+        function revealCertificate() {
+            state.chestOpened = true;
+            if (!state.certSerial) state.certSerial = generateSerialNumber();
+            saveState();
+            playSound('fanfare');
+            launchConfetti(180);
+            document.getElementById('chestUnlockStage').classList.add('hidden');
+            document.getElementById('certificateStage').classList.remove('hidden');
+            populateCertificateUI();
+        }
+
+        function populateCertificateUI() {
+            const score = getFinalScore();
+            const totalCorrect = getTotalCorrect();
+            const award = getAwardTitle(score);
+
+            document.getElementById('certSerial').textContent = `No. Sertifikat: ${state.certSerial}`;
+            document.getElementById('certStudentName').textContent = state.playerName;
+            document.getElementById('certSchoolName').textContent = state.schoolName;
+            document.getElementById('certTitleIcon').textContent = award.icon;
+            document.getElementById('certTitleText').textContent = award.title;
+            document.getElementById('certTitleDesc').textContent = award.desc;
+            document.getElementById('certScoreVal').textContent = `${score}`;
+            document.getElementById('certCorrectVal').textContent = `${totalCorrect}/${TOTAL_QUESTIONS}`;
+            document.getElementById('certCoinsVal').textContent = `${state.coins}`;
+            document.getElementById('certDate').textContent = formatIndonesianDate();
+
+            const grid = document.getElementById('certBreakdownGrid');
+            grid.innerHTML = ISLANDS.map((isl, idx) => {
+                const prog = state.islands[idx];
+                const pct = Math.round((prog.bestCorrect / isl.questions.length) * 100);
+                return `
+                    <div class="bg-white/90 border-2 border-amber-300 rounded-2xl p-3.5 flex items-center justify-between gap-3">
+                        <div class="flex items-center gap-3 min-w-0">
+                            <span class="text-2xl">${isl.icon}</span>
+                            <div class="min-w-0">
+                                <div class="font-game font-bold text-amber-950 text-sm truncate">${isl.name}</div>
+                                <div class="text-xs text-amber-800 truncate">${isl.topic}</div>
+                            </div>
+                        </div>
+                        <div class="text-right shrink-0">
+                            <div class="font-game font-bold text-emerald-700 text-base">${pct}%</div>
+                            <div class="text-[11px] font-bold text-amber-800">${prog.bestCorrect}/${isl.questions.length} Benar</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function downloadCertificatePNG() {
+            try {
+                playSound('click');
+                const canvas = document.createElement('canvas');
+                canvas.width = 1600;
+                canvas.height = 1131;
+                const ctx = canvas.getContext('2d');
+
+                const score = getFinalScore();
+                const totalCorrect = getTotalCorrect();
+                const award = getAwardTitle(score);
+                const dateStr = formatIndonesianDate();
+
+                const bgGrad = ctx.createLinearGradient(0, 0, 1600, 1131);
+                bgGrad.addColorStop(0, '#fffdf5');
+                bgGrad.addColorStop(0.5, '#fef4d6');
+                bgGrad.addColorStop(1, '#fffdf5');
+                ctx.fillStyle = bgGrad;
+                ctx.fillRect(0, 0, 1600, 1131);
+
+                ctx.strokeStyle = '#92400e';
+                ctx.lineWidth = 18;
+                ctx.strokeRect(36, 36, 1528, 1059);
+
+                ctx.strokeStyle = '#f59e0b';
+                ctx.lineWidth = 6;
+                ctx.strokeRect(62, 62, 1476, 1007);
+
+                ctx.strokeStyle = '#d97706';
+                ctx.lineWidth = 2;
+                ctx.setLineDash([12, 8]);
+                ctx.strokeRect(78, 78, 1444, 975);
+                ctx.setLineDash([]);
+
+                ctx.save();
+                ctx.translate(800, 565);
+                ctx.globalAlpha = 0.06;
+                ctx.strokeStyle = '#92400e';
+                ctx.lineWidth = 8;
+                ctx.beginPath();
+                ctx.arc(0, 0, 260, 0, Math.PI * 2);
+                ctx.stroke();
+                ctx.fillStyle = '#92400e';
+                ctx.beginPath();
+                ctx.moveTo(0, -250); ctx.lineTo(45, -45); ctx.lineTo(250, 0); ctx.lineTo(45, 45);
+                ctx.lineTo(0, 250); ctx.lineTo(-45, 45); ctx.lineTo(-250, 0); ctx.lineTo(-45, -45);
+                ctx.closePath();
+                ctx.fill();
+                ctx.restore();
+
+                ctx.textAlign = 'center';
+                ctx.fillStyle = '#b45309';
+                ctx.font = 'bold 26px Nunito, sans-serif';
+                ctx.fillText('PETUALANGAN HARTA KARUN IPAS KELAS 5 • ASAS GANJIL 2026/2027', 800, 145);
+
+                ctx.fillStyle = '#78350f';
+                ctx.font = 'bold 20px Nunito, sans-serif';
+                ctx.fillText(`No. Sertifikat: ${state.certSerial}`, 800, 182);
+
+                ctx.fillStyle = '#78350f';
+                ctx.font = '800 66px Cinzel, Georgia, serif';
+                ctx.fillText('SERTIFIKAT PENGHARGAAN', 800, 268);
+
+                const lineGrad = ctx.createLinearGradient(420, 0, 1180, 0);
+                lineGrad.addColorStop(0, 'rgba(217,119,6,0)');
+                lineGrad.addColorStop(0.5, '#d97706');
+                lineGrad.addColorStop(1, 'rgba(217,119,6,0)');
+                ctx.fillStyle = lineGrad;
+                ctx.fillRect(420, 290, 760, 5);
+
+                ctx.fillStyle = '#451a03';
+                ctx.font = '600 28px Nunito, sans-serif';
+                ctx.fillText('Dengan bangga diberikan kepada:', 800, 355);
+
+                ctx.fillStyle = '#082f49';
+                ctx.font = 'bold 64px Fredoka, sans-serif';
+                ctx.fillText(state.playerName, 800, 445, 1300);
+
+                ctx.fillStyle = '#92400e';
+                ctx.font = 'bold 34px Nunito, sans-serif';
+                ctx.fillText(state.schoolName, 800, 498, 1300);
+
+                ctx.fillStyle = '#451a03';
+                ctx.font = '600 24px Nunito, sans-serif';
+                ctx.fillText('Telah berhasil menuntaskan 45 misi ASAS Ganjil IPAS Kelas 5', 800, 565);
+                ctx.fillText('(Geografis & Maritim, Ekonomi, Ekosistem & Rantai Makanan, serta Siklus Air)', 800, 600);
+                ctx.fillText('dan dianugerahi penghargaan gelar:', 800, 636);
+
+                const pillW = 820;
+                const pillH = 82;
+                const pillX = 800 - pillW / 2;
+                const pillY = 665;
+                const pillGrad = ctx.createLinearGradient(pillX, pillY, pillX + pillW, pillY);
+                pillGrad.addColorStop(0, '#92400e');
+                pillGrad.addColorStop(0.5, '#f59e0b');
+                pillGrad.addColorStop(1, '#92400e');
+
+                ctx.fillStyle = pillGrad;
+                ctx.beginPath();
+                ctx.roundRect(pillX, pillY, pillW, pillH, 24);
+                ctx.fill();
+                ctx.strokeStyle = '#fde68a';
+                ctx.lineWidth = 4;
+                ctx.stroke();
+
+                ctx.fillStyle = '#ffffff';
+                ctx.font = 'bold 36px Fredoka, sans-serif';
+                ctx.fillText(`${award.icon}  ${award.title}  ${award.icon}`, 800, pillY + 54);
+
+                ctx.fillStyle = '#78350f';
+                ctx.font = 'bold 22px Nunito, sans-serif';
+                ctx.fillText(award.desc, 800, 782);
+
+                const stats = [
+                    { label: 'NILAI AKHIR', val: `${score}` },
+                    { label: 'JAWABAN BENAR', val: `${totalCorrect}/${TOTAL_QUESTIONS}` },
+                    { label: 'KOIN EMAS', val: `${state.coins}` }
+                ];
+                stats.forEach((st, i) => {
+                    const bx = 440 + i * 260;
+                    const by = 815;
+                    ctx.fillStyle = '#fef3c7';
+                    ctx.strokeStyle = '#d97706';
+                    ctx.lineWidth = 2.5;
+                    ctx.beginPath();
+                    ctx.roundRect(bx, by, 210, 86, 16);
+                    ctx.fill();
+                    ctx.stroke();
+
+                    ctx.fillStyle = '#92400e';
+                    ctx.font = 'bold 17px Nunito, sans-serif';
+                    ctx.fillText(st.label, bx + 105, by + 30);
+
+                    ctx.fillStyle = '#451a03';
+                    ctx.font = 'bold 34px Fredoka, sans-serif';
+                    ctx.fillText(st.val, bx + 105, by + 70);
+                });
+
+                ctx.textAlign = 'left';
+                ctx.fillStyle = '#92400e';
+                ctx.font = 'bold 20px Nunito, sans-serif';
+                ctx.fillText('Tanggal Penyelesaian', 170, 965);
+                ctx.fillStyle = '#451a03';
+                ctx.font = 'bold 26px Nunito, sans-serif';
+                ctx.fillText(dateStr, 170, 1002);
+
+                ctx.save();
+                ctx.translate(800, 978);
+                ctx.fillStyle = '#f59e0b';
+                ctx.beginPath();
+                ctx.arc(0, 0, 56, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.strokeStyle = '#92400e';
+                ctx.lineWidth = 4;
+                ctx.stroke();
+                ctx.textAlign = 'center';
+                ctx.fillStyle = '#ffffff';
+                ctx.font = 'bold 22px Fredoka, sans-serif';
+                ctx.fillText('LULUS', 0, -4);
+                ctx.fillStyle = '#fef08a';
+                ctx.font = 'bold 22px sans-serif';
+                ctx.fillText('★★★', 0, 26);
+                ctx.restore();
+
+                ctx.textAlign = 'right';
+                ctx.fillStyle = '#92400e';
+                ctx.font = 'bold 20px Nunito, sans-serif';
+                ctx.fillText('Pemandu Ekspedisi', 1430, 965);
+                ctx.fillStyle = '#451a03';
+                ctx.font = 'bold 26px Cinzel, Georgia, serif';
+                ctx.fillText('Kapten IPAS Nusantara', 1430, 1002);
+
+                const safeName = state.playerName.replace(/[^a-zA-Z0-9]+/g, '_');
+                const link = document.createElement('a');
+                link.download = `Sertifikat_ASAS_IPAS5_${safeName}.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+                showToast('Sertifikat berhasil diunduh sebagai gambar PNG!', '📥');
+            } catch (err) {
+                showToast('Gagal membuat gambar PNG. Gunakan tombol Cetak Sertifikat.', '⚠️');
+            }
+        }
+
+        /* =========================================================
+           13. MODAL RESET & EDIT PROFIL SERTIFIKAT
+           ========================================================= */
+        function openResetModal() {
+            playSound('click');
+            document.getElementById('modalReset').classList.remove('hidden');
+        }
+
+        function closeResetModal() {
+            document.getElementById('modalReset').classList.add('hidden');
+        }
+
+        function confirmResetGame() {
+            try {
+                localStorage.removeItem(STORAGE_KEY);
+            } catch (e) {}
+            closeResetModal();
+            state.coins = 0;
+            state.streak = 0;
+            state.chestOpened = false;
+            state.islands = ISLANDS.map(isl => ({
+                completed: false,
+                bestCorrect: 0,
+                total: isl.questions.length,
+                answers: {}
+            }));
+            document.getElementById('resumeBanner').classList.add('hidden');
+            document.getElementById('inputName').value = '';
+            document.getElementById('inputSchool').value = '';
+            showScreen('start');
+            showToast('Petualangan telah diatur ulang.', '⚓');
+        }
+
+        function openEditProfileModal() {
+            playSound('click');
+            document.getElementById('editNameInput').value = state.playerName;
+            document.getElementById('editSchoolInput').value = state.schoolName;
+            document.getElementById('modalEditProfile').classList.remove('hidden');
+        }
+
+        function closeEditProfileModal() {
+            document.getElementById('modalEditProfile').classList.add('hidden');
+        }
+
+        function saveEditedProfile() {
+            const newName = document.getElementById('editNameInput').value.trim();
+            const newSchool = document.getElementById('editSchoolInput').value.trim();
+            if (!newName || !newSchool) {
+                showToast('Nama dan Asal Sekolah tidak boleh kosong!', '⚠️');
+                return;
+            }
+            state.playerName = newName;
+            state.schoolName = newSchool;
+            saveState();
+            updateHUD();
+            populateCertificateUI();
+            closeEditProfileModal();
+            showToast('Data sertifikat berhasil diperbarui!', '✅');
+        }
+
+        /* =========================================================
+           14. STARTUP APLIKASI SAAT HALAMAN SELESAI DIMUAT
+           ========================================================= */
+        window.onload = function () {
+            renderAvatarSelector();
+
+            const saved = loadState();
+            if (saved) {
+                const keys = saved.islands.filter(i => i.completed).length;
+                document.getElementById('resumeInfo').textContent =
+                    `${saved.playerName} (${saved.schoolName}) • ${keys}/4 Kunci • ${saved.coins} Koin Emas`;
+                document.getElementById('resumeBanner').classList.remove('hidden');
+            }
+        };
+    </script>
+</body>
+</html>
